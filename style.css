@@ -1,20 +1,34 @@
-.row {
+.container {
+  width: 100%;
+  height: 300px;
   display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: baseline;
+  padding-top: 20px;
 }
-.col {
-  float: left;
-  padding: 10px;
+.item:nth-child(1) {
+  flex-grow: 5;
 }
-
-.col.side {
-  width: 50%;
+#title_input input {
+  border: 0ch;
+  font-size: x-large;
+  font-style: bold;
 }
-
-.col.date {
-  width: 10%;
-  margin-right: auto;
+.item:nth-child(2) {
+  flex-grow: 3;
 }
-
-.col.date {
-  width: 10%;
+#date_input input {
+  flex-grow: 1;
+  border: 0ch;
+  font-size: small;
+  margin-left: 10px;
+}
+.item:nth-child(3) {
+  flex-grow: 2;
+}
+#cpn_input input {
+  flex-grow: 1;
+  border: 0ch;
+  font-size: small;
 }
