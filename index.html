@@ -62,20 +62,27 @@
         e.preventDefault()
 
         from = $('#from').val()
-        
         to = $('#to').val()
-
         amount = $('#amount').val()
         
         var url = `http://data.fixer.io/api/latest?access_key=a5f010e7f9a910fddf333c88c4daf851&base`
-        
+
+        let from_rates;
+        let to_rates;
+        let exchanged;
+
+        // Getting Exchange Rates
         $.ajax({
           method: 'GET',
           url: url,
           success: function(data) {
-            let from_rates = data["rates"][from];
-            let to_rates = data["rates"][to];
+            from_rates = data["rates"][from];
+            to_rates = data["rates"][to];
             console.log(data);
+
+            // Calculating: (1 EUR) % (1 from) * (1 to)
+            exchanged = (1 / from_rates) * to_rates;
+            alert(exchanged)
           }
         })
       })
