@@ -1,0 +1,23 @@
+{
+  "name": "oss_final_project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "lite-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ez615/OSS_Final_Project.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "lite-server": "^2.6.1"
+  },
+  "bugs": {
+    "url": "https://github.com/ez615/OSS_Final_Project/issues"
+  },
+  "homepage": "https://github.com/ez615/OSS_Final_Project#readme"
+}
