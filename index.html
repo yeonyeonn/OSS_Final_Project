@@ -34,81 +34,7 @@
       </div>
     </div>
   </div>
-  <!--Title Area-->
 
-  <!--1st Attempt to Apply Exchange Rate API
-  <p id="data"></p>
-
-  <script>
-    const url =
-      'https://www.koreaexim.go.kr/site/program/financial/exchangeJSON';
-
-    fetch(url)
-      .then(res => res.json())
-      .then(myJson => {
-        document.getElementById('data').innerText = JSON.stringify(myJson, null, 1);
-      })
-  </script>-->
-
-  <!--2nd Attempt to Apply Exchange Rate API
-  <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
-    crossorigin="anonymous"></script>
-  <script>
-    $.ajax({
-      method: "OPTION",
-      url: "https://www.koreaexim.go.kr/site/program/financial/exchangeJSON",
-      data: { data: 'AP01' },
-      headers: { Authorization: "" } // Personal Authorization Key
-    })
-      .done(function (msg) {
-        console.log(msg)
-      });
-  </script>-->
-
-  <!--3rd Attempt to Apply Exchange Rate API
-  <script>
-    let url = 'https://api.exchangeratesapi.io/v1/'
-
-    function params(paramsObj) {
-      return new URLSearchParams({
-        access_key: '15d0211b1afa9800f69e160968743ded',
-        ...paramsObj
-      })
-    }
-
-    function getLatest(options) {
-      fetch(`${url}/latest?${params(options)}`)
-        .then(res => res.json())
-        .then(console.log);
-    }
-
-    getLatest();
-  </script> -->
-
-  <!-- 4th
-  <script src="http://code.jquery.com/jquery-latest.js">
-    // set endpoint and your access key
-    endpoint = 'latest'
-    access_key = '15d0211b1afa9800f69e160968743ded';
-
-    // get the most recent exchange rates via the "latest" endpoint:
-    $.ajax({
-      url: 'https://api.exchangeratesapi.io/v1/' + endpoint + '?access_key=' + access_key,
-      dataType: 'jsonp',
-      success: function (json) {
-
-        // exchange rata data is stored in json.rates
-        console.log(json.rates.GBP);
-
-        // base currency is stored in json.base
-        console.log(json.base);
-
-        // timestamp can be accessed in json.timestamp
-        console.log(json.timestamp);
-
-      }
-    });
-  </script> -->
   <div class="container">
     <h1 class="text-center">Currency Converter</h1>
     <form id="form">
@@ -118,7 +44,7 @@
       </div>
       <div class="form-group">
         <label for="to:">To Currency</label>
-        <input class="form-control" id="to" required type="text" value="KOR" />
+        <input class="form-control" id="to" required type="text" value="KRW" />
       </div>
       <div class="form-group">
         <label for="amount:">Amount</label>
@@ -136,27 +62,20 @@
         e.preventDefault()
 
         from = $('#from').val()
-
+        
         to = $('#to').val()
 
         amount = $('#amount').val()
-
-        // make the request
-
-        //http://data.fixer.io/api/latest
-        //? access_key = a5f010e7f9a910fddf333c88c4daf851
-        //& base = USD
-        //& symbols = KOR
-
-        var url = `
-        http://data.fixer.io/api/latest?access_key=a5f010e7f9a910fddf333c88c4daf851
-    `
-
+        
+        var url = `http://data.fixer.io/api/latest?access_key=a5f010e7f9a910fddf333c88c4daf851&base`
+        
         $.ajax({
           method: 'GET',
           url: url,
           success: function(data) {
-            console.log(data)
+            let from_rates = data["rates"][from];
+            let to_rates = data["rates"][to];
+            console.log(data);
           }
         })
       })
