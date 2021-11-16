@@ -35,57 +35,84 @@
     </div>
   </div>
 
+  <!--Currency Converter-->
   <div class="container">
     <h1 class="text-center mb-3">Currency Converter</h1>
-    <form id="form" class = "row g-6">
+    <form id="form" class="form-inline d-flex row g-7">
       <div class="d-flex w-50 align-items-center form-group">
         <label for="From:">From</label>
-        <select class = "form-select ms-3" required aria-label = "select example"></select>
-        <input class="input_form d-flex form-control ms-1" id="from" required type="text" value="USD" />
-        <input class="d-flex form-control ms-2" required type="number" value="1" />
+        <select class="from form-select ms-3" name="from" required aria-label="select example">
+          <option selected>USD</option>
+        </select>
+        <input class="amount d-flex form-control ms-2" required type="number" value="1" />
       </div>
       <div class="d-flex w-50 align-items-center form-group col-auto">
         <label for="to:">To</label>
-        <select class = "form-select ms-3" required aria-label = "select example"></select>
-        <input class="input_form d-flex form-control ms-1" id="to" required type="text" value="KRW" />
+        <select class="to form-select ms-3" name="to" required aria-label="select example">
+          <option selected>KRW</option>
+        </select>
         <input class="d-flex form-control ms-2" required type="text" aria-label="Disabled input example" disabled>
       </div>
-      <button class="btn btn-danger btn-clock mt-3">Get Exchange</button>
+      <button class="d-flex btn btn-danger btn-clock mt-3">Get Exchange</button>
     </form>
   </div>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
   <script>
-
+    // creating option value of select form
+    let exchangeList = ['AED', 'AFN', 'ALL', 'AMD', 'ANG', 'AOA', 'ARS', 'AUD', 'AWG', 'AZN', 'BAM', 'BBD', 'BDT', 'BGN', 'BHD', 'BIF', 'BMD', 'BND', 'BOB', 'BRL', 'BSD', 'BTC', 'BTN', 'BWP', 'BYN', 'BYR', 'BZD', 'CAD', 'CDF', 'CHF', 'CLF', 'CLP', 'CNY', 'COP', 'CRC', 'CUC', 'CUP', 'CVE', 'CZK', 'DJF', 'DKK', 'DOP', 'DZD', 'EGP', 'ERN', 'ETB', 'EUR', 'FJD', 'FKP', 'GBP', 'GEL', 'GGP', 'GHS', 'GIP', 'GMD', 'GNF', 'GTQ', 'GYD', 'HKD', 'HNL', 'HRK', 'HTG', 'HUF', 'IDR', 'ILS', 'IMP', 'INR', 'IQD', 'IRR', 'ISK', 'JEP', 'JMD', 'JOD', 'JPY', 'KES', 'KGS', 'KHR', 'KMF', 'KPW', 'KRW', 'KWD', 'KYD', 'KZT', 'LAK', 'LBP', 'LKR', 'LRD', 'LSL', 'LTL', 'LVL', 'LYD', 'MAD', 'MDL', 'MGA', 'MKD', 'MMK', 'MNT', 'MOP', 'MRO', 'MUR', 'MVR', 'MWK', 'MXN', 'MYR', 'MZN', 'NAD', 'NGN', 'NIO', 'NOK', 'NPR', 'NZD', 'OMR', 'PAB', 'PEN', 'PGK', 'PHP', 'PKR', 'PLN', 'PYG', 'QAR', 'RON', 'RSD', 'RUB', 'RWF', 'SAR', 'SBD', 'SCR', 'SDG', 'SEK', 'SGD', 'SHP', 'SLL', 'SOS', 'SRD', 'STD', 'SVC', 'SYP', 'SZL', 'THB', 'TJS', 'TMT', 'TND', 'TOP', 'TRY', 'TTD', 'TWD', 'TZS', 'UAH', 'UGX', 'USD', 'UYU', 'UZS', 'VEF', 'VND', 'VUV', 'WST', 'XAF', 'XAG', 'XAU', 'XCD', 'XDR', 'XOF', 'XPF', 'YER', 'ZAR', 'ZMK', 'ZMW', 'ZWL'];
+    
     $(document).ready(function () {
-      $('#form').submit(function (e) {
-        e.preventDefault()
-
-        from = $('#from').val()
-        to = $('#to').val()
-        amount = $('#amount').val()
-        
-        var url = `http://data.fixer.io/api/latest?access_key=a5f010e7f9a910fddf333c88c4daf851&base`
-
-        let from_rates;
-        let to_rates;
-        let exchanged;
-
-        // Getting Exchange Rates
-        $.ajax({
-          method: 'GET',
-          url: url,
-          success: function(data) {
-            from_rates = data["rates"][from];
-            to_rates = data["rates"][to];
-            console.log(data);
-
-            // Calculating: (1 EUR) % (1 from) * (1 to)
-            exchanged = (1 / from_rates) * to_rates;
-            alert(exchanged)
-          }
-        })
-      })
+      for (var i = 1; i < exchangeList.length; i++) {
+        $('.form-select').append('<option value ="' + exchangeList[i] + '">' + exchangeList[i] + '</option>');
+      }
     })
+  </script>
+
+  <script>
+$(document).ready(function () {
+  $('#form').submit(function (e) {
+    e.preventDefault();
+
+    from = $('.from').val();
+    alert(from)
+    to = $('.to').val();
+    alert(to)
+    amount = Number($('.amount').val());
+    alert(amount)
+
+    if (from === to) {
+      alert("From & To currency are the same!\nPlease select different currency.");
+      return;
+    }
+
+    /*'fixer' exchange rate api for free
+    Problem: It could call values only 100 times a month
+    Possible solutions 
+      1) Using another api: hard to develop new codes
+      2) */
+    var url = `http://data.fixer.io/api/latest?access_key=a5f010e7f9a910fddf333c88c4daf851&base`;
+
+    let from_rates;
+    let to_rates;
+    let exchanged;
+
+    // Getting Exchange Rates
+    $.ajax({
+      method: 'GET',
+      url: url,
+      success: function (data) {
+        from_rates = data["rates"][from];
+        to_rates = data["rates"][to];
+        console.log(data);
+
+        // Calculating: (1 EUR) % (1 from) * (1 to)
+        exchanged = ((1 / from_rates) * to_rates) * amount;
+        alert(exchanged.toFixed(2));
+      }
+    })
+  })
+})
 
   </script>
 

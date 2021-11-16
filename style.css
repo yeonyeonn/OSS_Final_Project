@@ -1,3 +1,7 @@
 .form-select {
     width: 120px;
 }
+
+.form-control {
+    width: 200px;
+}
