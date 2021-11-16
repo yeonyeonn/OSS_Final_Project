@@ -7,28 +7,42 @@
   align-items: baseline;
   padding-top: 20px;
 }
+
+.form-control {
+  border: 0ch;
+  margin-left: 1px;
+  box-shadow: 0px 10px 0px -7px #ebebeb, 0px 10px 0px -7px #ebebeb;
+  -webkit-transition: box-shadow 0.3s;
+  transition: box-shadow 0.3s;
+}
+.form-control:focus {
+  outline: none;
+  border: 0ch;
+  box-shadow: 0px 10px 0px -7px #4ea6ea, 0px 10px 0px -7px #4ea6ea;
+}
+
 .item:nth-child(1) {
-  flex-grow: 5;
+  width: 500px;
 }
 #title_input input {
-  border: 0ch;
   font-size: x-large;
   font-style: bold;
 }
+
 .item:nth-child(2) {
-  flex-grow: 3;
+  flex-grow: auto;
 }
 #date_input input {
   flex-grow: 1;
-  border: 0ch;
   font-size: small;
   margin-left: 10px;
 }
+
 .item:nth-child(3) {
-  flex-grow: 2;
+  width: 300px;
 }
 #cpn_input input {
   flex-grow: 1;
-  border: 0ch;
   font-size: small;
+  margin-left: 200px;
 }
