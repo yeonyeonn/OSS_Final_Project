@@ -44,5 +44,22 @@
 #cpn_input input {
   flex-grow: 1;
   font-size: small;
-  margin-left: 200px;
+  margin-left: 300px;
+}
+
+#total_budget {
+  margin-top: 40px;
+  width: 1280px;
+}
+#total_text {
+  margin-left: 30px;
+}
+#total_text h4 {
+  color: rgb(46, 46, 145);
+}
+#btn_dollar {
+  background-color: #4a94cc;
+  margin-left: 15px;
+  margin-right: 35px;
+  width: 40px;
 }
