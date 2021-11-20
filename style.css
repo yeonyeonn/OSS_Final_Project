@@ -5,3 +5,81 @@
 .form-control {
     width: 200px;
 }
+
+.container {
+    width: 1200px;
+    height: 80px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: end;
+    padding-top: 20px;
+  }
+  
+  .form-control {
+    border: 0ch;
+    margin-left: 1px;
+    box-shadow: 0px 10px 0px -7px #ebebeb, 0px 10px 0px -7px #ebebeb;
+    -webkit-transition: box-shadow 0.3s;
+    transition: box-shadow 0.3s;
+  }
+  .form-control:focus {
+    outline: none;
+    border: 0ch;
+    box-shadow: 0px 10px 0px -7px #4ea6ea, 0px 10px 0px -7px #4ea6ea;
+  }
+  
+  .item:nth-child(1) {
+    width: 500px;
+  }
+  #title_input input {
+    font-size: x-large;
+    font-style: bold;
+  }
+  
+  .item:nth-child(2) {
+    flex-grow: auto;
+  }
+  #date_input input {
+    flex-grow: 1;
+    font-size: small;
+    margin-left: 10px;
+  }
+  
+  .item:nth-child(3) {
+    width: 300px;
+  }
+  #cpn_input input {
+    flex-grow: 1;
+    font-size: small;
+    margin-left: 180px;
+  }
+  
+  #total_budget_container {
+    margin-top: 50px;
+    width: 1150px;
+  }
+  h4,
+  h2 {
+    margin-bottom: 0;
+  }
+  #total_text {
+    margin-left: 30px;
+    color: rgb(46, 46, 145);
+  }
+  #budget_text,
+  #total_cost,
+  #budget_cost,
+  #currency {
+    margin-left: 20px;
+    color: rgb(46, 46, 145);
+  }
+  #btns_total_budget {
+    margin-right: 10px;
+  }
+  #btn_mode {
+    margin-left: auto;
+  }
+  #btn_dollar {
+    margin-left: 10px;
+  }
