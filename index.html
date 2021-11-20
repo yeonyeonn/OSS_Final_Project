@@ -15,8 +15,12 @@
 
     <link rel="stylesheet" href="style.css" type="text/css" />
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
-
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css"
+      integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog=="
+      crossorigin="anonymous"
+    />
 
     <title>Travel Helper (가제)</title>
   </head>
@@ -57,23 +61,25 @@
     </header>
     <main>
       <!--Showing total Budget-->
-      <div class="container bg-light p-1 rounded-2 ps-2 d-flex justify-content-between align-items-center" id="total_budget">
+      <div
+        class="
+          container
+          bg-light
+          p-1
+          rounded-2
+          ps-2
+          d-flex
+          justify-content-between
+          align-items-center
+        "
+        id="total_budget_container"
+      >
         <div class="d-flex align-items-center" id="total_buget_text_area">
-          <h4 id="total_text">
-          Total: 
-          </h4>
-          <h4 id="total_cost">
-            0
-          </h4>
-          <h4 id="budget_text"> 
-            / Budget:
-          </h4>
-          <h4 id="budget_cost">
-            0
-          </h4>
-          <h2 id="currency">
-            $
-          </h2>
+          <h4 id="total_text">Total:</h4>
+          <h4 id="total_cost">0</h4>
+          <h4 id="budget_text">/ Budget:</h4>
+          <h4 id="budget_cost">0</h4>
+          <h2 id="currency">$</h2>
         </div>
         <div id="btns_total_budget">
           <button type="button" class="btn btn-warning" id="btn_mode">
@@ -84,6 +90,20 @@
           </button>
         </div>
       </div>
+      <!--Main Plan Area-->
+      <div class="cotainer" id="plan_container">
+        <div id="plan_date_area"></div>
+        <div id="list_map_area">
+          <div id="list_area">
+            <div id="plan_list_area"></div>
+            <div id="budget_list_area">
+              <!--Fill here-->
+            </div>
+          </div>
+          <div id="map_area">
+            <!--Fill here-->
+          </div>
+        </div>
       </div>
     </main>
     <footer></footer>
@@ -156,6 +176,5 @@
         }
       );
     </script>
-    
   </body>
 </html>
