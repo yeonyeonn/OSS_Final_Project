@@ -51,15 +51,27 @@
   margin-top: 50px;
   width: 1150px;
 }
+h4,
+h2 {
+  margin-bottom: 0;
+}
 #total_text {
   margin-left: 30px;
-}
-#total_text h4 {
   color: rgb(46, 46, 145);
 }
+#budget_text,
+#total_cost,
+#budget_cost,
+#currency {
+  margin-left: 20px;
+  color: rgb(46, 46, 145);
+}
+#btns_total_budget {
+  margin-right: 10px;
+}
+#btn_mode {
+  margin-left: auto;
+}
 #btn_dollar {
-  background-color: #4a94cc;
-  margin-left: 15px;
-  margin-right: 35px;
-  width: 40px;
+  margin-left: 10px;
 }
