@@ -48,8 +48,9 @@
 }
 
 #total_budget_container {
-  margin-top: 50px;
+  margin-top: 40px;
   width: 1150px;
+  background-color: #d3e4f1dc;
 }
 h4,
 h2 {
@@ -74,4 +75,10 @@ h2 {
 }
 #btn_dollar {
   margin-left: 10px;
+}
+
+#plan_container {
+  margin-top: 10px;
+  width: 1150px;
+  height: 500px;
 }
