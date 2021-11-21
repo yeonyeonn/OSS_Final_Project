@@ -102,14 +102,16 @@
   <script>
     var mode = 1;
     $(document).ready(function () {
-      $('#btn_mode').submit(function (e) {
+      $('#btn_mode').click(function (e) {
+        alert("btn_mode executed");
         e.preventDefault();
         (mode === 1 ? mode = 2 : mode = 1);
 
         let currency1 = "KRW";
-        let currency2 = $('#currency2').val();
-        let total_other = Number($('#total_cost').val()); // other country's currency
-        let budget_other = Number($('#budget_cost').val()); // other country's currency
+        let currency2 = $('#to_currency').val();
+        let total_other = document.querySelector('#total_cost').innerText
+        let budget_other = document.querySelector('#budget_cost').innerText
+        alert(budget_other)
 
         if (currency1 === currency2) {
           alert("Please choose a currency other than Won.");
@@ -117,7 +119,7 @@
         }
 
         // api 
-        //var url = `http://data.fixer.io/api/latest?access_key=e38e55b1d6ab2de7b77a697cbdc7d938`;
+        var url = `http://data.fixer.io/api/latest?access_key=e38e55b1d6ab2de7b77a697cbdc7d938`;
 
         let currency1_rates;
         let currency2_rates;
@@ -131,19 +133,23 @@
           success: function (data) {
             currency1_rates = data["rates"][currency1];
             currency2_rates = data["rates"][currency2];
-            alert(currency1_rates);
-            alert(data);
+            console.log(data);
 
             // Calculating (other country's currency to Korean currency)
-            total_krw = (((1 / currency2) * currency1) * total_other).toFixed(2);
-            budget_krw = (((1 / currency2) * currency1) * budget_other).toFixed(2);
+            //currency1 = 1344
+            //currency2 = 1.13
+
+            total_krw = (((1 / currency2_rates) * currency1_rates) * total_other).toFixed(2);
+            budget_krw = (((1 / currency2_rates) * currency1_rates) * budget_other).toFixed(2);
+ 
+            if (mode === 2) { //
+              document.getElementById('#total_cost').innerText = total_krw;
+              document.getElementById('#budget_cost').innerText = budget_krw;
+            }
+
           }
         })
 
-        if (mode === 2) {
-          document.getElementById('#total_cost').innerText = total_krw;
-          document.getElementById('#budget_cost').innerText = budget_krw;
-        }
 
       })
     })
