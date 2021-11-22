@@ -82,8 +82,7 @@ h2 {
   margin-top: 10px;
   width: 1150px;
   height: 510px;
-  padding-top: 10px;
-  padding-left: 15px;
+  padding: 10px;
 }
 
 p {
@@ -99,12 +98,62 @@ p {
   font-style: bold;
   margin-left: 20px;
 }
-#list_map_area {
-  padding-bottom: 10px;
-}
 #map_area {
   margin-left: 10px;
 }
 #budget_list_area {
   margin-top: 5px;
+}
+#plan_list_area {
+  padding: 10px;
+  border: 2px solid;
+  border-color: #fad91d;
+}
+#plan_input {
+  margin-left: 10px;
+  margin-right: 5px;
+  border: 0px;
+  box-shadow: -5px 8px 0px -7px #bbbbbb;
+}
+#plan_input:focus {
+  outline: none;
+  box-shadow: -5px 8px 0px -7px #000000;
+}
+#plan_list {
+  margin-top: 5px;
+}
+#btn_add {
+  background-color: #fad91d;
+  width: fit-content;
+  height: fit-content;
+  font-size: 16px;
+  color: #616161;
+  padding: 2px;
+  padding-left: 7px;
+  padding-right: 7px;
+}
+
+#budget_list_area {
+  padding: 10px;
+  border: 2px solid;
+  border-color: rgb(58, 160, 255);
+}
+.task {
+  padding-bottom: 2px;
+  box-shadow: -2px 4px 0px -3px #bbbbbb;
+}
+.btn-danger {
+  width: fit-content;
+  height: fit-content;
+  padding: 0px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+#btn_gps {
+  border: 1px solid #000000;
+  width: fit-content;
+  height: fit-content;
+  padding: 0px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
