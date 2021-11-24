@@ -135,9 +135,9 @@
               </div>
 
               <div class="p-1 ms-1" id="plan_list">
-                <div class="task d-flex align-items-center">
+                <div class="task sample d-flex align-items-center m-1">
                   <span class="me-auto">Sample plan</span>
-                  <button class="btn btn-danger me-1">
+                  <button class="btn btn-danger me-1" id="btn_smp_remove">
                     <i class="bi bi-x"></i>
                   </button>
                   <button class="btn" id="btn_gps">
@@ -162,6 +162,63 @@
     </main>
     <footer></footer>
 
+    <script>
+      /*plan list add button*/
+      let btn_add = document.querySelector("#btn_add");
+      btn_add.addEventListener("click", () => {
+        let plan_input = document.querySelector("#plan_input");
+        let text = plan_input.value;
+
+        if (!text.length) return;
+
+        let task = {
+          text: text,
+          location: "",
+        };
+
+        addToList(task);
+
+        plan_input.value = "";
+      });
+
+      function addToList(task) {
+        let div = document.createElement("div");
+        div.classList.add("task", "d-flex", "align-items-center", "m-1");
+
+        let span = document.createElement("span");
+        span.className = "me-auto";
+        span.textContent = task.text;
+        div.appendChild(span);
+
+        /*plan list remove button*/
+        let btn_remove = document.createElement("button");
+        btn_remove.className = "btn btn-danger me-1";
+        btn_remove.innerHTML = '<i class="bi bi-x"></i>';
+        div.appendChild(btn_remove);
+
+        btn_remove.addEventListener("click", () => {
+          div.remove();
+        });
+
+        let btn_gps = document.createElement("button");
+        btn_gps.className = "btn";
+        btn_gps.id = "btn_gps";
+        btn_gps.innerHTML = '<i class="bi bi-geo-alt-fill"></i>';
+        div.appendChild(btn_gps);
+
+        let planList = document.querySelector("#plan_list");
+        planList.appendChild(div);
+      }
+
+      /*remove sample*/
+      let btn_smp_remove = document.querySelector("#btn_smp_remove");
+      btn_smp_remove.addEventListener("click", () => {
+        let div = document.querySelector(".task.sample");
+        div.remove();
+      });
+    </script>
+
+    <!--DO NOT TOUCH-->
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
