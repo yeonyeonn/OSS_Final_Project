@@ -177,13 +177,13 @@
                     type="text"
                     class="bg-light flex-fill"
                     id="costPlan_input"
-                    placeholder="Text Plan here"
+                    placeholder="Plan"
                   />
                 <input
                     type="number"
                     class="bg-light flex-fill"
                     id="budget_input"
-                    placeholder="Text Cost here"
+                    placeholder="Cost"
                     required
                   />
                 <button type="button" class="btn" id="budgetAdd">
@@ -194,7 +194,7 @@
                 <div class="cost sample d-flex align-items-center m-1">
                   <span class="me-auto">Sample plan</span>
                   <span class="eachCost me-5">Cost</span>
-                  <button class="btn btn-danger me-1" id="btn_smp_remove">
+                  <button class="btn btn-danger me-1" id="budget_smp_remove">
                     <i class="bi bi-x"></i>
                   </button>
                 </div>
@@ -274,6 +274,7 @@
 
       let budgetButton = document.querySelector('#budgetAdd');
       budgetButton.addEventListener("click", () => {
+
         let costPlan_input = document.querySelector("#costPlan_input");
         let budget_input = document.querySelector("#budget_input");
         let costPlan_text = costPlan_input.value;
@@ -304,7 +305,7 @@
 
       // Add cost plan function
       function addToCost(costTask) {
-        alert(costTask)
+
         let div = document.createElement("div");
         div.className = "cost d-flex align-items-center m-1";
 
@@ -323,7 +324,7 @@
 
         // Remove button for cost plan
         let buttonRemove = document.createElement("button");
-        buttonRemove.className = "btn btn-sm btn-danger";
+        buttonRemove.className = "btn btn-danger me-1";
         buttonRemove.innerHTML = '<i class="bi bi-x"></i>';
         div.appendChild(buttonRemove);
 
@@ -341,6 +342,12 @@
         
       }
       })
+
+      let budget_smp_remove = document.querySelector("#budget_smp_remove");
+      budget_smp_remove.addEventListener("click", () => {
+        let div = document.querySelector(".cost.sample");
+        div.remove();
+      });
 
       function budgetChange(value) {
         // needs to be added up as the budget for each date is added
@@ -686,6 +693,5 @@
         }
       );
     </script>
-
   </body>
 </html>

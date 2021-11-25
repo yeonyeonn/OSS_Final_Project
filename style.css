@@ -260,11 +260,11 @@ input::-webkit-inner-spin-button {
 }
 
 #budgetAdd {
-  background-color: #fad91d;
+  background-color: rgb(58, 160, 255);
   width: fit-content;
   height: fit-content;
   font-size: 16px;
-  color: #616161;
+  color: #f7f7f7;
   padding: 2px;
   padding-left: 7px;
   padding-right: 7px;
