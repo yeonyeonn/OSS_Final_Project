@@ -1,11 +1,14 @@
+.navbar {
+  padding-left: 50px;
+}
 #title_container {
   width: 1200px;
-  height: 80px;
+  height: 70px;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-items: end;
-  padding-top: 20px;
+  margin-top: 0px;
 }
 
 .form-control {
