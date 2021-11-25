@@ -84,7 +84,7 @@
           <h4 id="total_cost">300</h4>
           <h4 id="budget_text">&#160 Budget</h4>
           <h4 id="budget_cost">400</h4>
-          <h3 id="currency">$</h3>
+          <h3 id="currency"></h3>
         </div>
         <div class="d-flex align-items-center" id="btns_total_budget">
           <button type="button" class="btn btn-warning me-2" id="btn_mode">
@@ -97,22 +97,105 @@
             required
             aria-label="select example"
           >
-            <option selected>USD</option>
+            <option selected>Select Currency</option>
           </select>
         </div>
       </div>
       <!--Main Plan Area-->
-      <div class="cotainer" id="plan_container">
-        <div id="plan_date_area"></div>
-        <div id="list_map_area">
-          <div id="list_area">
-            <div id="plan_list_area"></div>
-            <div id="budget_list_area">
-              <!--Fill here-->
+      <div
+        class="
+          container
+          d-flex
+          align-items-strech
+          flex-column
+          bg-light
+          rounded-3
+        "
+        id="plan_container"
+      >
+        <div class="d-flex align-items-baseline ms-1" id="plan_date_area">
+          <p class="fw-bold fs-3">|</p>
+          <p class="fs-4" id="day_date_text">10.XX</p>
+          <input
+            class="bg-light fw-bold fs-5"
+            id="day_title_input"
+            type="text"
+            placeholder="day title"
+          />
+        </div>
+
+        <div class="d-flex flex-fill align-items-strech" id="list_map_area">
+          <div class="d-flex flex-column flex-grow-1 w-50" id="lists_area">
+            <div class="flex-grow-1 h-50 rounded-2" id="plan_list_area">
+              <div class="d-flex align-items-baseline" id="plan_input_area">
+                <h6 class="fw-bold ms-1">PLAN</h6>
+                <input
+                  type="text"
+                  class="bg-light flex-fill"
+                  id="plan_input"
+                  placeholder="Text here"
+                />
+                <button type="button" class="btn" id="btn_add">
+                  <i class="bi bi-plus-lg"></i>Add
+                </button>
+              </div>
+
+              <div class="p-1 ms-1" id="plan_list">
+                <div class="task sample d-flex align-items-center m-1">
+                  <span class="me-auto">Sample plan</span>
+                  <button class="btn btn-danger me-1" id="btn_smp_remove">
+                    <i class="bi bi-x"></i>
+                  </button>
+                  <button class="btn" id="btn_gps">
+                    <i class="bi bi-geo-alt-fill"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex-grow-1 h-50 rounded-2" id="budget_list_area">
+              <!--Fill budget list here-->
+              <div class="d-flex">
+              <h6 class="fw-bold ms-1 me-auto">BUDGET</h6>
+              <h6 class="fw-bold ms-1 right-box mx-3">Total</h6>
+              <h6 class="fw-bold ms-1 right-box mx-3" id="total_sum"></h6>
+              <h6 class="fw-bold ms-1 right-box mx-3">Budget</h6>
+              <h6 class="fw-bold ms-2 right-box mx-3" id="budget_sum"></h6>
+              <h6 class="fw-bold ms-2 right-box mx-3" id="sumCurrency"></h6>
+            </div>
+              <input
+                  type="text"
+                  class="bg-light flex-fill"
+                  id="costPlan_input"
+                  placeholder="Text Plan here"
+                />
+              <input
+                  type="number"
+                  class="bg-light flex-fill"
+                  id="budget_input"
+                  placeholder="Text Cost here"
+                  required
+                />
+              <button type="button" class="btn" id="budgetAdd">
+                  <i class="bi bi-plus-lg"></i>Add
+              </button>
+              <div class="p-1 ms-1" id="cost_list">
+                <div class="cost sample d-flex align-items-center m-1">
+                  <span class="me-auto">Sample plan</span>
+                  <span class="eachCost me-5">Cost</span>
+                  <button class="btn btn-danger me-1" id="btn_smp_remove">
+                    <i class="bi bi-x"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+              
             </div>
           </div>
-          <div id="map_area">
-            <!--Fill here-->
+
+          <div class="bg-secondary rounded-2 flex-grow-1 w-50" id="map_area">
+            <!--Fill map here-->
+            map
           </div>
         </div>
       </div>
@@ -120,6 +203,115 @@
     <footer></footer>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script>
+      /*plan list add button*/
+      let btn_add = document.querySelector("#btn_add");
+      btn_add.addEventListener("click", () => {
+        let plan_input = document.querySelector("#plan_input");
+        let text = plan_input.value;
+
+        if (!text.length) return;
+
+        let task = {
+          text: text,
+          location: "",
+        };
+
+        addToList(task);
+
+        plan_input.value = "";
+      });
+
+      function addToList(task) {
+        let div = document.createElement("div");
+        div.classList.add("task", "d-flex", "align-items-center", "m-1");
+
+        let span = document.createElement("span");
+        span.className = "me-auto";
+        span.textContent = task.text;
+        div.appendChild(span);
+
+        /*plan list remove button*/
+        let btn_remove = document.createElement("button");
+        btn_remove.className = "btn btn-danger me-1";
+        btn_remove.innerHTML = '<i class="bi bi-x"></i>';
+        div.appendChild(btn_remove);
+
+        btn_remove.addEventListener("click", () => {
+          div.remove();
+        });
+
+        let btn_gps = document.createElement("button");
+        btn_gps.className = "btn";
+        btn_gps.id = "btn_gps";
+        btn_gps.innerHTML = '<i class="bi bi-geo-alt-fill"></i>';
+        div.appendChild(btn_gps);
+
+        let planList = document.querySelector("#plan_list");
+        planList.appendChild(div);
+      }
+
+      /*remove sample*/
+      let btn_smp_remove = document.querySelector("#btn_smp_remove");
+      btn_smp_remove.addEventListener("click", () => {
+        let div = document.querySelector(".task.sample");
+        div.remove();
+      });
+
+
+      /*budget add */
+      let costTasks = [];
+
+      let budgetButton = document.querySelector('#budgetAdd');
+      budgetButton.addEventListener("click", () => {
+        let costPlan_input = document.querySelector("#costPlan_input");
+        let budget_input = document.querySelector("#budget_input");
+        let costPlan_text = costPlan_input.value;
+        let budget_text = budget_input.value;
+
+        if (!costPlan_text.length || !budget_text.length) return;
+
+        let costTask = {
+          plan: costPlan_text,
+          cost: budget_text,
+        };
+
+        costTasks.push(costTask);
+        addToCost(costTask);
+
+        costPlan_input.value = "";
+        budget_input.value = "";
+      
+      function addToCost(costTask) {
+        let div = document.createElement("div");
+        div.className = "cost d-flex align-items-center m-1";
+
+        let span1 = document.createElement("span");
+        let span2 = document.createElement("span");
+        span1.className = "me-auto"
+        span2.className = "eachCost me-5"
+        span1.textContent = costTask.plan;
+        let symbol = exchangeList.find((o) => o.currency === $("#to_currency option:selected").text()).symbol;
+        span2.textContent = symbol + costTask.cost;
+        div.appendChild(span1);
+        div.appendChild(span2);
+
+        let buttonRemove = document.createElement("button");
+        buttonRemove.className = "btn btn-sm btn-danger";
+        buttonRemove.innerHTML = '<i class="bi bi-x"></i>';
+        div.appendChild(buttonRemove);
+
+        buttonRemove.addEventListener("click", () => {
+          div.remove();
+          costTasks = costTasks.filter((t) => t !== costTask);
+        });
+
+        document.querySelector("#cost_list").appendChild(div);
+        
+      }
+      })
+    </script>
 
     <script>
       // creating option value of select form
@@ -297,7 +489,10 @@
       $(document).ready(function () {
         $("#to_currency").on("change", function () {
           let showSymbol = exchangeList.find((o) => o.currency === this.value);
-          alert(this.value)
+          if (this.value === "Select Currency") {
+            document.querySelector("#currency").textContent = "";
+            return
+          }
           document.querySelector("#currency").textContent = showSymbol.symbol;
         });
       });
@@ -328,7 +523,7 @@
           }
 
           // api
-          var url = `http://data.fixer.io/api/latest?access_key=aacb92a146d90f4e06777887e2303beb`;
+          //var url = `http://data.fixer.io/api/latest?access_key=aacb92a146d90f4e06777887e2303beb`;
 
           let currency1_rates;
           let currency2_rates;
@@ -346,13 +541,14 @@
               console.log(data);
             },
           });
+          alert("info")
+          alert(currency1_rates)
+          alert(currency2_rates)
+          alert(total_cost)
+          alert(currency1_rates)
           // Calculating
           if (mode === 2) {
-            total_exchanged = (
-              (1 / currency2_rates) *
-              currency1_rates *
-              total_cost
-            ).toFixed(2);
+            total_exchanged = ((1 / currency2_rates) * currency1_rates * total_cost).toFixed(2);
             budget_exchanged = (
               (1 / currency2_rates) *
               currency1_rates *
@@ -360,6 +556,7 @@
             ).toFixed(2);
             document.querySelector("#currency").textContent = exchangeList.find((o) => o.currency === "KRW").symbol;
           } else {
+            alert("else executed")
             total_exchanged = (
               (1 / currency1_rates) *
               currency2_rates *
@@ -370,7 +567,7 @@
               currency2_rates *
               budget_cost
             ).toFixed(2);
-            document.querySelector("#currency").textContent = exchangeList.find((o) => o.currency === "KRW").symbol;
+            document.querySelector("#currency").textContent = exchangeList.find((o) => o.currency === $("#to_currency option:selected").text()).symbol;
           }
 
           document.querySelector("#total_cost").textContent = total_exchanged;
@@ -432,7 +629,7 @@
           },
           startDate: new Date(),
           endDate: new Date(),
-          drops: "down",
+          drops: "down", 
         },
         function (start, end, label) {
           console.log(
@@ -447,5 +644,6 @@
         }
       );
     </script>
+
   </body>
 </html>
