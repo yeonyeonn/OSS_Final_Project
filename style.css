@@ -194,6 +194,7 @@ p {
   padding: 10px;
   border: 2px solid;
   border-color: rgb(58, 160, 255);
+  overflow: auto;
 }
 #costPlan_input {
   font-size: medium;
@@ -226,6 +227,22 @@ p {
 
 #budget_list {
   margin-top: 5px;
+}
+
+#budget_sum {
+  width: 90px;
+  color: rgb(46, 46, 145);
+  font-size: medium;
+  font-weight: bold;
+  margin-left: 10px;
+  margin-right: 5px;
+  border: 0px;
+  box-shadow: -5px 8px 0px -7px #bbbbbb;
+}
+
+#budget_sum:focus {
+  outline: none;
+  box-shadow: -5px 8px 0px -7px #000000;
 }
 
 .cost {

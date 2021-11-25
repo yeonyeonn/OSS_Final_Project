@@ -81,9 +81,9 @@
         <div class="d-flex align-items-center" id="total_buget_text_area">
           <i class="bi bi-coin fa-2x ms-3"></i>
           <h4 id="total_text">Total</h4>
-          <h4 id="total_cost">300</h4>
+          <h4 id="total_cost">0</h4>
           <h4 id="budget_text">&#160 Budget</h4>
-          <h4 id="budget_cost">400</h4>
+          <h4 id="budget_cost">0</h4>
           <h3 id="currency"></h3>
         </div>
         <div class="d-flex align-items-center" id="btns_total_budget">
@@ -153,17 +153,24 @@
               </div>
             </div>
 
-            <div class="flex-grow-1 h-50 rounded-2" id="budget_list_area">
+            <div class="flex-grow-1 align-items-center h-50 rounded-2  mb-5" id="budget_list_area">
               <!--Fill budget list here-->
               <div class="d-flex">
-              <h6 class="fw-bold ms-1 me-auto">BUDGET</h6>
-              <h6 class="fw-bold ms-1 right-box mx-3">Total</h6>
-              <h6 class="fw-bold ms-1 right-box mx-3" id="total_sum"></h6>
-              <h6 class="fw-bold ms-1 right-box mx-3">Budget</h6>
-              <h6 class="fw-bold ms-2 right-box mx-3" id="budget_sum"></h6>
-              <h6 class="fw-bold ms-2 right-box mx-3" id="sumCurrency"></h6>
+              <h6 class="fw-bold me-auto">BUDGET</h6>
+              <h6 class="fw-bold right-box mx-1">Total</h6>
+              <h6 class="fw-bold right-box mx-1" id="total_sum">0</h6>
+              <h6 class="fw-bold right-box ms-3">Budget</h6>
+              <input
+                  type="number"
+                  class="bg-light ms-2"
+                  id="budget_sum"
+                  placeholder="0"
+                  onchange="budgetChange(this.value)"
+                />
+              <!--<h6 class="fw-bold ms-2 right-box mx-3" id="budget_sum"></h6>-->
+              <h6 class="fw-bold right-box ms-1 me-2" id="sumCurrency"></h6>
             </div>
-            <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center mt-3">
               <input
                   type="text"
                   class="bg-light flex-fill"
@@ -271,6 +278,10 @@
         let budget_input = document.querySelector("#budget_input");
         let costPlan_text = costPlan_input.value;
         let budget_text = budget_input.value;
+        let total_cost = parseInt(document.querySelector("#total_cost").innerText);
+        let budget_cost = parseInt(document.querySelector("#budget_cost").innerText);
+        let total_sum = parseInt(document.querySelector("#total_sum").innerText);
+        let budget_sum = document.querySelector("#budget_sum").value;
 
         if (!costPlan_text.length || !budget_text.length) return;
 
@@ -284,7 +295,7 @@
 
         costPlan_input.value = "";
         budget_input.value = "";
-      
+
       function addToCost(costTask) {
         let div = document.createElement("div");
         div.className = "cost d-flex align-items-center m-1";
@@ -295,9 +306,12 @@
         span2.className = "eachCost me-5"
         span1.textContent = costTask.plan;
         let symbol = exchangeList.find((o) => o.currency === $("#to_currency option:selected").text()).symbol;
-        span2.textContent = symbol + costTask.cost;
+        span2.textContent = symbol + " " + costTask.cost;
         div.appendChild(span1);
         div.appendChild(span2);
+
+        document.querySelector("#total_sum").innerText = total_sum + parseInt(costTask.cost);
+        document.querySelector("#total_cost").innerText = total_cost + parseInt(costTask.cost);
 
         let buttonRemove = document.createElement("button");
         buttonRemove.className = "btn btn-sm btn-danger";
@@ -306,13 +320,25 @@
 
         buttonRemove.addEventListener("click", () => {
           div.remove();
+          let total_sum = parseInt(document.querySelector("#total_sum").innerText);
+          alert(total_sum)
+          alert(costTask.cost)
+          document.querySelector("#total_sum").innerText = total_sum - parseInt(costTask.cost);
           costTasks = costTasks.filter((t) => t !== costTask);
+
         });
 
         document.querySelector("#cost_list").appendChild(div);
         
       }
       })
+
+      function budgetChange(value) {
+        // needs to be added up as the budget for each date is added
+        alert(value)
+        document.querySelector("#budget_cost").innerText = value
+      }
+
     </script>
 
     <script>
@@ -496,6 +522,7 @@
             return
           }
           document.querySelector("#currency").textContent = showSymbol.symbol;
+          document.querySelector("#sumCurrency").textContent = showSymbol.symbol;
         });
       });
     </script>
