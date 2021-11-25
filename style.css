@@ -111,6 +111,7 @@ p {
   padding: 10px;
   border: 2px solid;
   border-color: #fad91d;
+  overflow: auto;
 }
 #plan_input {
   margin-left: 10px;
