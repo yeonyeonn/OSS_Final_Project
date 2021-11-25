@@ -92,10 +92,11 @@
           </button>
 
           <select
-            class="form-select me-auto border border-primary border-3"
+            class="form-select me-auto border-primary border-3"
             id="to_currency"
             required
             aria-label="select example"
+            
           >
             <option selected>Select Currency</option>
           </select>
@@ -154,40 +155,44 @@
             </div>
 
             <div class="flex-grow-1 align-items-center h-50 rounded-2  mb-5" id="budget_list_area">
-              <!--Fill budget list here-->
+              <!--Top of the budget area-->
               <div class="d-flex">
-              <h6 class="fw-bold me-auto">BUDGET</h6>
-              <h6 class="fw-bold right-box mx-1">Total</h6>
-              <h6 class="fw-bold right-box mx-1" id="total_sum">0</h6>
-              <h6 class="fw-bold right-box ms-3">Budget</h6>
-              <input
-                  type="number"
-                  class="bg-light ms-2"
-                  id="budget_sum"
-                  placeholder="0"
-                  onchange="budgetChange(this.value)"
-                />
-              <!--<h6 class="fw-bold ms-2 right-box mx-3" id="budget_sum"></h6>-->
-              <h6 class="fw-bold right-box ms-1 me-2" id="sumCurrency"></h6>
-            </div>
-            <div class="d-flex align-items-center mt-3">
-              <input
-                  type="text"
-                  class="bg-light flex-fill"
-                  id="costPlan_input"
-                  placeholder="Text Plan here"
-                />
-              <input
-                  type="number"
-                  class="bg-light flex-fill"
-                  id="budget_input"
-                  placeholder="Text Cost here"
-                  required
-                />
-              <button type="button" class="btn" id="budgetAdd">
-                  <i class="bi bi-plus-lg"></i>Add
-                </div>
-              </button>
+                <h6 class="fw-bold me-auto">BUDGET</h6>
+                <h6 class="fw-bold right-box mx-1">Total</h6>
+                <h6 class="fw-bold right-box mx-1" id="total_sum">0</h6>
+                <h6 class="fw-bold right-box ms-3">Budget</h6>
+                <input
+                    type="number"
+                    class="bg-light"
+                    id="budget_sum"
+                    placeholder="0"
+                    onchange="budgetChange(this.value)"
+                  />
+                <!--<h6 class="fw-bold ms-2 right-box mx-3" id="budget_sum"></h6>-->
+                <h6 class="fw-bold right-box ms-1 me-2" id="sumCurrency"></h6>
+              </div>
+
+              <!--Budget list input area-->
+              <div class="d-flex align-items-center mt-3">
+                <input
+                    type="text"
+                    class="bg-light flex-fill"
+                    id="costPlan_input"
+                    placeholder="Text Plan here"
+                  />
+                <input
+                    type="number"
+                    class="bg-light flex-fill"
+                    id="budget_input"
+                    placeholder="Text Cost here"
+                    required
+                  />
+                <button type="button" class="btn" id="budgetAdd">
+                    <i class="bi bi-plus-lg"></i>Add
+                </button>
+              </div>
+
+              <!--Budget list area-->
               <div class="p-1 ms-1" id="cost_list">
                 <div class="cost sample d-flex align-items-center m-1">
                   <span class="me-auto">Sample plan</span>
@@ -285,6 +290,12 @@
 
         if (!costPlan_text.length || !budget_text.length) return;
 
+        if ($("#to_currency").val() === "Select Currency") {
+          document.querySelector("#to_currency").className = "form-select me-auto border-danger is-invalid border-3";
+        } else {
+          document.querySelector("#to_currency").className = "form-select me-auto border-primary border-3";
+        }
+
         let costTask = {
           plan: costPlan_text,
           cost: budget_text,
@@ -297,6 +308,7 @@
         budget_input.value = "";
 
       function addToCost(costTask) {
+        alert(costTask)
         let div = document.createElement("div");
         div.className = "cost d-flex align-items-center m-1";
 
@@ -321,9 +333,9 @@
         buttonRemove.addEventListener("click", () => {
           div.remove();
           let total_sum = parseInt(document.querySelector("#total_sum").innerText);
-          alert(total_sum)
-          alert(costTask.cost)
+          let total_cost = parseInt(document.querySelector("#total_cost").innerText);
           document.querySelector("#total_sum").innerText = total_sum - parseInt(costTask.cost);
+          document.querySelector("#total_cost").innerText = total_cost - parseInt(costTask.cost);
           costTasks = costTasks.filter((t) => t !== costTask);
 
         });

@@ -109,7 +109,11 @@ h2 {
 
 #to_currency {
   font-weight: bold;
-  width: 180px;
+  width: 210px;
+}
+
+label {
+  font-size: small;
 }
 
 #total_text,
