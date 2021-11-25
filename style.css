@@ -229,6 +229,11 @@ p {
   box-shadow: -5px 8px 0px -7px #000000;
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
 #budget_list {
   margin-top: 5px;
 }

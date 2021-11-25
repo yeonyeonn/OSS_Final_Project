@@ -278,9 +278,8 @@
         let budget_input = document.querySelector("#budget_input");
         let costPlan_text = costPlan_input.value;
         let budget_text = budget_input.value;
-        let total_cost = parseInt(document.querySelector("#total_cost").innerText);
-        let budget_cost = parseInt(document.querySelector("#budget_cost").innerText);
-        let total_sum = parseInt(document.querySelector("#total_sum").innerText);
+        let total_cost = deleteComma(document.querySelector("#total_cost").innerText);
+        let total_sum = deleteComma(document.querySelector("#total_sum").innerText);
         let budget_sum = document.querySelector("#budget_sum").value;
 
         if (!costPlan_text.length || !budget_text.length) return;
@@ -302,6 +301,8 @@
         costPlan_input.value = "";
         budget_input.value = "";
 
+
+      // Add cost plan function
       function addToCost(costTask) {
         alert(costTask)
         let div = document.createElement("div");
@@ -313,13 +314,14 @@
         span2.className = "eachCost me-5"
         span1.textContent = costTask.plan;
         let symbol = exchangeList.find((o) => o.currency === $("#to_currency option:selected").text()).symbol;
-        span2.textContent = symbol + " " + costTask.cost;
+        span2.textContent = symbol + " " + addComma(costTask.cost);
         div.appendChild(span1);
         div.appendChild(span2);
 
-        document.querySelector("#total_sum").innerText = total_sum + parseInt(costTask.cost);
-        document.querySelector("#total_cost").innerText = total_cost + parseInt(costTask.cost);
+        document.querySelector("#total_sum").innerText = addComma(total_sum + parseInt(costTask.cost));
+        document.querySelector("#total_cost").innerText = addComma(total_cost + parseInt(costTask.cost));
 
+        // Remove button for cost plan
         let buttonRemove = document.createElement("button");
         buttonRemove.className = "btn btn-sm btn-danger";
         buttonRemove.innerHTML = '<i class="bi bi-x"></i>';
@@ -327,12 +329,12 @@
 
         buttonRemove.addEventListener("click", () => {
           div.remove();
-          let total_sum = parseInt(document.querySelector("#total_sum").innerText);
-          let total_cost = parseInt(document.querySelector("#total_cost").innerText);
-          document.querySelector("#total_sum").innerText = total_sum - parseInt(costTask.cost);
-          document.querySelector("#total_cost").innerText = total_cost - parseInt(costTask.cost);
-          costTasks = costTasks.filter((t) => t !== costTask);
+          let total_sum = deleteComma(document.querySelector("#total_sum").innerText);
+          let total_cost = deleteComma(document.querySelector("#total_cost").innerText);
 
+          document.querySelector("#total_sum").innerText = addComma(total_sum - parseInt(costTask.cost));
+          document.querySelector("#total_cost").innerText = addComma(total_cost - parseInt(costTask.cost));
+          costTasks = costTasks.filter((t) => t !== costTask);
         });
 
         document.querySelector("#cost_list").appendChild(div);
@@ -342,9 +344,20 @@
 
       function budgetChange(value) {
         // needs to be added up as the budget for each date is added
-        alert(value)
-        document.querySelector("#budget_cost").innerText = value
+        document.querySelector("#budget_cost").innerText = addComma(value)
+        if (document.querySelector("#budget_cost").innerText === "") {
+          document.querySelector("#budget_cost").innerText = "0"
+        }
       }
+
+      function addComma(num) {
+        var pattern = /\B(?=(\d{3})+(?!\d))/g;
+        return num.toString().replace(pattern, ',');
+      }
+
+      function deleteComma(num){
+    return parseInt(num.replace(/,/g , ''));
+}
 
     </script>
 
@@ -544,19 +557,12 @@
 
       $(document).ready(function () {
         $("#btn_mode").click(function (e) {
-          alert("btn_mode executed");
           e.preventDefault();
           mode === 1 ? (mode = 2) : (mode = 1);
-          alert(mode);
           let currency1 = "KRW"; // currency
           let currency2 = $("#to_currency").val(); // currency
-          let total_cost = document.querySelector("#total_cost").innerText;
-          let budget_cost = document.querySelector("#budget_cost").innerText;
-
-          if (currency1 === currency2) {
-            alert("Please choose a currency other than Won.");
-            return;
-          }
+          let total_cost = deleteComma(document.querySelector("#total_cost").innerText);
+          let budget_cost = deleteComma(document.querySelector("#budget_cost").innerText);
 
           // api
           //var url = `http://data.fixer.io/api/latest?access_key=aacb92a146d90f4e06777887e2303beb`;
@@ -606,8 +612,8 @@
             document.querySelector("#currency").textContent = exchangeList.find((o) => o.currency === $("#to_currency option:selected").text()).symbol;
           }
 
-          document.querySelector("#total_cost").textContent = total_exchanged;
-          document.querySelector("#budget_cost").textContent = budget_exchanged;
+          document.querySelector("#total_cost").textContent = addComma(total_exchanged);
+          document.querySelector("#budget_cost").textContent = addComma(budget_exchanged);
         });
       });
     </script>
