@@ -13,7 +13,7 @@
       crossorigin="anonymous"
     />
 
-    <link rel="stylesheet" href="style.css" type="text/css" />
+    <link rel="stylesheet" href="./style.css" type="text/css" />
 
     <link
       rel="stylesheet"
@@ -36,7 +36,7 @@
         <div class="container-fluid">
           <a class="navbar-brand fw-bold" href="#">
             <img
-              src="logo.png"
+              src="./logo.png"
               alt=""
               width="30"
               height="30"
@@ -232,6 +232,16 @@
       btn_smp_remove.addEventListener("click", () => {
         let div = document.querySelector(".task.sample");
         div.remove();
+      });
+
+      /*gps button popup*/
+      let btn_gps = document.querySelector("#btn_gps");
+      btn_gps.addEventListener("click", () => {
+        window.open(
+          "./pop_up.html",
+          "address_input",
+          "width=400, height=200, left=100, top=50"
+        );
       });
     </script>
 
