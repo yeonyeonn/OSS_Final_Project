@@ -81,7 +81,7 @@ h2 {
   margin-left: 10px;
 }
 
-#plan_container {
+.plan.container {
   margin-top: 10px;
   width: 1150px;
   height: 510px;

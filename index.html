@@ -112,6 +112,7 @@
       <!--Main Plan Area-->
       <div
         class="
+          plan
           container
           d-flex
           align-items-strech
@@ -119,11 +120,11 @@
           bg-light
           rounded-3
         "
-        id="plan_container"
+        id="plan_container_1"
       >
         <div class="d-flex align-items-baseline ms-1" id="plan_date_area">
           <p class="fw-bold fs-3">|</p>
-          <p class="fs-4" id="day_date_text">10.XX</p>
+          <p class="fs-4 date text" id="day_date_text">10.XX</p>
           <input
             class="bg-light fw-bold fs-5"
             id="day_title_input"
@@ -270,6 +271,8 @@
     />
 
     <script type="text/javascript">
+      let st, ed;
+
       $("#demo").daterangepicker(
         {
           locale: {
@@ -311,6 +314,92 @@
               label +
               ")"
           );
+          st = start.format("YYYY-MM-DD");
+          ed = end.format("YYYY-MM-DD");
+          console.log(st + " to " + ed);
+
+          let st_date, ed_date;
+          st_date = st.split("-");
+          ed_date = ed.split("-");
+
+          //let first_date = document.querySelector(".date.text");
+          //first_date.textContent = st_date[1] + "." + st_date[2];
+
+          let i = 1,
+            st_mon = +st_date[1],
+            st_day = +st_date[2],
+            ed_mon = +ed_date[1],
+            ed_day = +ed_date[2],
+            day_range = [],
+            mon_range = [];
+
+          //case of changed month
+          if (st_mon !== ed_mon) {
+            if (
+              st_mon === 1 ||
+              st_mon === 3 ||
+              st_mon === 5 ||
+              st_mon === 7 ||
+              st_mon === 8 ||
+              st_mon === 10 ||
+              st_mon === 12
+            ) {
+              while (ed_day + 1 !== i) {
+                while (st_day <= 31) {
+                  day_range.push(st_day++);
+                  mon_range.push(st_mon);
+                }
+                day_range.push(i++);
+                mon_range.push(ed_mon);
+              }
+            } else if (st_mon === 2) {
+              while (ed_day + 1 !== i) {
+                while (st_day <= 28) {
+                  day_range.push(st_day++);
+                  mon_range.push(st_mon);
+                }
+                day_range.push(i++);
+                mon_range.push(ed_mon);
+              }
+            } else {
+              while (ed_day + 1 !== i) {
+                while (st_day <= 30) {
+                  day_range.push(st_day++);
+                  mon_range.push(st_mon);
+                }
+                day_range.push(i++);
+                mon_range.push(ed_mon);
+              }
+            }
+          }
+          //case of same month
+          else {
+            while (st_day !== ed_day + 1) {
+              day_range.push(st_day++);
+              mon_range.push(st_mon);
+            }
+          }
+          console.log("day_range: ", day_range);
+          console.log("mon_range: ", mon_range);
+
+          if (day_range.length - 1) {
+            for (let i = 0; i < day_range.length - 1; i++) {
+              $("#plan_container_1")
+                .clone()
+                .appendTo("main")
+                .prop("id", "plan_container_" + (i + 2));
+            }
+          }
+
+          i = 0;
+          document.querySelectorAll(".date.text").forEach((date) => {
+            if (st_mon !== ed_mon) {
+            }
+            date.textContent = mon_range[i] + "." + day_range[i];
+            i++;
+          });
+          day_range = [];
+          mon_range = [];
         }
       );
     </script>
