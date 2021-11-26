@@ -177,6 +177,7 @@
           </div>
         </div>
       </div>
+      <div class="clone container" id="clone"></div>
     </main>
     <footer></footer>
 
@@ -305,15 +306,11 @@
           drops: "down",
         },
         function (start, end, label) {
-          console.log(
-            "New date range selected: " +
-              start.format("YYYY-MM-DD") +
-              " to " +
-              end.format("YYYY-MM-DD") +
-              " (predefined range: " +
-              label +
-              ")"
-          );
+          let dateText = document.querySelector(".date.text");
+          if (dateText !== "10.XX") {
+            $("#clone").empty();
+          }
+
           st = start.format("YYYY-MM-DD");
           ed = end.format("YYYY-MM-DD");
           console.log(st + " to " + ed);
@@ -321,9 +318,6 @@
           let st_date, ed_date;
           st_date = st.split("-");
           ed_date = ed.split("-");
-
-          //let first_date = document.querySelector(".date.text");
-          //first_date.textContent = st_date[1] + "." + st_date[2];
 
           let i = 1,
             st_mon = +st_date[1],
@@ -386,7 +380,7 @@
             for (let i = 0; i < day_range.length - 1; i++) {
               $("#plan_container_1")
                 .clone()
-                .appendTo("main")
+                .appendTo(".clone")
                 .prop("id", "plan_container_" + (i + 2));
             }
           }
@@ -398,6 +392,7 @@
             date.textContent = mon_range[i] + "." + day_range[i];
             i++;
           });
+
           day_range = [];
           mon_range = [];
         }
