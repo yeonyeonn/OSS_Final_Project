@@ -225,6 +225,15 @@
         btn_gps.innerHTML = '<i class="bi bi-geo-alt-fill"></i>';
         div.appendChild(btn_gps);
 
+        /*gps button popup*/
+        btn_gps.addEventListener("click", () => {
+          window.open(
+            "./pop_up.html",
+            "address_input",
+            "width=400, height=100, left=500, top=350"
+          );
+        });
+
         let planList = document.querySelector("#plan_list");
         planList.appendChild(div);
       }
@@ -235,10 +244,8 @@
         let div = document.querySelector(".task.sample");
         div.remove();
       });
-
-      /*gps button popup*/
-      let btn_gps = document.querySelector("#btn_gps");
-      btn_gps.addEventListener("click", () => {
+      let btn_smp_gps = document.querySelector("#btn_gps");
+      btn_smp_gps.addEventListener("click", () => {
         window.open(
           "./pop_up.html",
           "address_input",

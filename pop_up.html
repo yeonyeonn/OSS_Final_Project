@@ -28,6 +28,15 @@
     <div class="d-flex justify-content-center">
       <button type="submit" class="btn btn-sm btn-primary">SUBMIT</button>
     </div>
+
+    <script>
+      let btn_submit = document.querySelector(".btn");
+      btn_submit.addEventListener("click", () => {
+        let text = document.querySelector("#address_input").value;
+        localStorage.setItem("pass_address", text);
+        self.close();
+      });
+    </script>
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
