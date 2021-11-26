@@ -111,6 +111,7 @@ p {
   padding: 10px;
   border: 2px solid;
   border-color: #fad91d;
+  overflow: auto;
 }
 #plan_input {
   margin-left: 10px;
@@ -160,3 +161,25 @@ p {
   padding-left: 5px;
   padding-right: 5px;
 }
+#map {
+height: 100%;
+}
+ html,body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+       #map {
+        height: 100%;
+      }
+      
+     
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      
+      
