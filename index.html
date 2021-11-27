@@ -162,11 +162,16 @@
                 <h6 class="fw-bold ms-1">PLAN</h6>
                 <input
                   type="text"
-                  class="bg-light flex-fill"
+                  class="plan input bg-light flex-fill"
                   id="plan_input"
                   placeholder="Text here"
                 />
-                <button type="button" class="btn" id="btn_add">
+                <button
+                  type="button"
+                  class="btn"
+                  id="btn_add"
+                  onclick="btn_add_onclick(this.parentNode.parentNode.parentNode.parentNode.parentNode.id)"
+                >
                   <i class="bi bi-plus-lg"></i>Add
                 </button>
               </div>
@@ -174,7 +179,11 @@
               <div class="p-1 ms-1" id="plan_list">
                 <div class="task sample d-flex align-items-center m-1">
                   <span class="me-auto">Sample plan</span>
-                  <button class="btn btn-danger me-1" id="btn_smp_remove">
+                  <button
+                    class="btn btn-danger me-1"
+                    id="btn_smp_remove"
+                    onclick="btn_remove_onclick(this.parentNode, this.previousSibling.textContent)"
+                  >
                     <i class="bi bi-x"></i>
                   </button>
                   <button class="btn" id="btn_gps">
@@ -216,7 +225,12 @@
                     placeholder="Cost"
                     required
                   />
-                <button type="button" class="btn" id="budgetAdd">
+                <button
+                  type="button"
+                  class="btn"
+                  id="budgetAdd"
+                  onclick="budgetAdd_onclick(this.parentNode.parentNode.parentNode.parentNode.parentNode.id)"
+                >
                   <i class="bi bi-plus-lg"></i>Add
                 </button>
               </div>
@@ -225,7 +239,11 @@
                   <span class="me-auto">Sample plan</span>
                   <span class="eachSymbol me-1"></span>
                   <span class="eachCost me-3">Cost</span>
-                  <button class="btn btn-danger me-1" id="budget_smp_remove">
+                  <button
+                    class="btn btn-danger me-1"
+                    id="budget_smp_remove"
+                    onclick="budgetRemove_onclick(this.parentNode, this.previousSibling.previousSibling.previousSibling.textContent, this.previousSibling.textContent)"
+                  >
                     <i class="bi bi-x"></i>
                   </button>
                 </div>
@@ -362,50 +380,75 @@
     </script>
 
     <script>
+      // Add plans (yellow box)
       let tasks = [];
-      /*plan list add button*/
-      let btn_add = document.querySelector("#btn_add");
-      btn_add.addEventListener("click", () => {
-        let plan_input = document.querySelector("#plan_input");
-        let text = plan_input.value;
+      let locations = [];
+      let popup;
 
-        if (!text.length) return;
+      function btn_add_onclick(id) {
+        let idx = +id.split("_")[2] - 1; 
+        console.log(idx);
 
-        let task = {
-          text: text,
-          location: "",
-        };
+        let plan_input = document.querySelectorAll("#plan_input")[idx];
+        let task = plan_input.value;
+
+        //let task = plan_input.value;
+        console.log("task : " + task);
+
+        if (!task.length) return;
+
+        //popup html
+        /*popup = window.open(
+          "./pop_up.html",
+          "address_input",
+          "width=400, height=100, left=500, top=350"
+        );*/
 
         tasks.push(task);
         saveTasks();
-        
-        addToList(task);
+
+        addToList(task, idx);
 
         plan_input.value = "";
-      });
+      }
+
+      function btn_remove_onclick(div, task) {
+        console.log("onclick");
+        div.remove();
+
+        console.log("remove");
+        tasks = tasks.filter((t) => t !== task);
+
+        saveTasks();
+      }
 
       //Function addToList
-      function addToList(task) {
+      function addToList(task, idx) {
+        console.log("addToList");
         let div = document.createElement("div");
         div.classList.add("task", "d-flex", "align-items-center", "m-1");
 
         let span = document.createElement("span");
         span.className = "me-auto";
-        span.textContent = task.text;
+        span.textContent = task;
         div.appendChild(span);
 
         /*plan list remove button*/
         let btn_remove = document.createElement("button");
         btn_remove.className = "btn btn-danger me-1";
         btn_remove.innerHTML = '<i class="bi bi-x"></i>';
+        btn_remove.setAttribute(
+          "onclick",
+          "btn_remove_onclick(this.parentNode, this.previousSibling.textContent)"
+        );
         div.appendChild(btn_remove);
 
         //Remove Event
-        btn_remove.addEventListener("click", () => {
+        /*btn_remove.addEventListener("click", () => {
           div.remove();
           tasks = tasks.filter((t) => t !== task);
           saveTasks();
-        });
+        });*/
 
         let btn_gps = document.createElement("button");
         btn_gps.className = "btn";
@@ -413,16 +456,7 @@
         btn_gps.innerHTML = '<i class="bi bi-geo-alt-fill"></i>';
         div.appendChild(btn_gps);
 
-        /*gps button popup*/
-        btn_gps.addEventListener("click", () => {
-          window.open(
-            "./pop_up.html",
-            "address_input",
-            "width=400, height=100, left=500, top=350"
-          );
-        });
-
-        let planList = document.querySelector("#plan_list");
+        let planList = document.querySelectorAll("#plan_list")[idx];
         planList.appendChild(div);
       }
 
@@ -447,11 +481,11 @@
       }
 
       /*remove sample*/
-      let btn_smp_remove = document.querySelector("#btn_smp_remove");
+      /*let btn_smp_remove = document.querySelector("#btn_smp_remove");
       btn_smp_remove.addEventListener("click", () => {
         let div = document.querySelector(".task.sample");
         div.remove();
-      });
+      });*/
       let btn_smp_gps = document.querySelector("#btn_gps");
       btn_smp_gps.addEventListener("click", () => {
         window.open(
@@ -463,20 +497,28 @@
     </script>
 
     <script>
-      /*budget add */
+      // Add cost plans (blue box)
       let costTasks = [];
       
-      let budgetButton = document.querySelector('#budgetAdd');
-      budgetButton.addEventListener("click", () => {
+      function budgetAdd_onclick(id) {
+        let idx = +id.split("_")[2] - 1; 
+        console.log(idx);
 
-        let costPlan_input = document.querySelector("#costPlan_input");
-        let cost_input = document.querySelector("#cost_input");
+        let costPlan_input = document.querySelectorAll("#costPlan_input")[idx];
+        let cost_input = document.querySelectorAll("#cost_input")[idx];
         let costPlan_text = costPlan_input.value;
         let cost_text = cost_input.value;
         let total_cost = deleteComma(document.querySelector("#total_cost").innerText);
-        let total_sum = deleteComma(document.querySelector("#total_sum").innerText);
-        let budget_sum = document.querySelector("#budget_sum").value;
+        console.log(document.querySelectorAll("#total_sum")[idx])
+        console.log(document.querySelectorAll("#total_sum")[idx].innerText)
+        let total_sum = deleteComma(document.querySelectorAll("#total_sum")[idx].innerText);
+        console.log(total_sum)
+        console.log("d")
+        alert(total_sum)
+        console.log(addComma(total_sum))
+        let budget_sum = document.querySelectorAll("#budget_sum")[idx].value;
 
+        // invalid input handling
         if (!costPlan_text.length || !cost_text.length) return;
 
         if ($("#to_currency").val() === "Select Currency") {
@@ -489,45 +531,64 @@
         let costTask = {
           plan: costPlan_text,
           cost: cost_text,
+          index: idx,
           mode: mode
         };
 
         costTasks.push(costTask);
-        addToCost(costTask);
+        addToCost(costTask, idx);
 
         costPlan_input.value = "";
         cost_input.value = "";
 
+      }
 
-      // Add cost plan function
-      function addToCost(costTask) {
+      function budgetRemove_onclick(div, plan, cost, idx) {
+        console.log("onclick");
+        console.log(idx);
+        div.remove();
+
+        console.log("remove");
+        costTasks = costTasks.filter((t) => t.plan !== plan && t.index !== idx);
+
+        saveTasks();
+      }
+
+      //Function addToCost
+      function addToCost(costTask, idx) {
+        console.log("addToCost");
         let div = document.createElement("div");
         div.className = "cost d-flex align-items-center m-1";
 
         let span1 = document.createElement("span");
         let span2 = document.createElement("span");
         let span3 = document.createElement("span");
+        let symbol = document.querySelector("#currency").textContent;
         span1.className = "me-auto"
         span2.className = "eachSymbol me-1"
         span3.className = "eachCost me-3"
         span1.textContent = costTask.plan;
-        let symbol = document.querySelector("#sumCurrency").textContent;
         span2.textContent = symbol
         span3.textContent = addComma(costTask.cost);
         div.appendChild(span1);
         div.appendChild(span2);
         div.appendChild(span3);
-
-        document.querySelector("#total_sum").innerText = addComma(total_sum + parseInt(costTask.cost));
+        alert(total_sum)
+        console.log(total_sum)
+        document.querySelectorAll("#total_sum")[idx].innerText = addComma(total_sum + parseInt(costTask.cost));
         document.querySelector("#total_cost").innerText = addComma(total_cost + parseInt(costTask.cost));
 
         // Remove button for cost plan
-        let buttonRemove = document.createElement("button");
-        buttonRemove.className = "btn btn-danger me-1";
-        buttonRemove.innerHTML = '<i class="bi bi-x"></i>';
-        div.appendChild(buttonRemove);
+        let budgetRemove = document.createElement("button");
+        budgetRemove.className = "btn btn-danger me-1";
+        budgetRemove.innerHTML = '<i class="bi bi-x"></i>';
+        budgetRemove.setAttribute(
+          "onclick",
+          "budgetRemove_onclick(this.parentNode, this.previousSibling.textContent, idx)"
+        );
+        div.appendChild(budgetRemove);
 
-        buttonRemove.addEventListener("click", () => {
+        budgetRemove.addEventListener("click", () => {
           let total_sum = deleteComma(document.querySelector("#total_sum").innerText);
           let total_cost = deleteComma(document.querySelector("#total_cost").innerText);
           document.querySelector("#total_sum").textContent = addComma(total_sum - deleteComma(div.childNodes[2].textContent));
@@ -539,7 +600,7 @@
 
         document.querySelector("#cost_list").appendChild(div);
       }
-      })
+  
 
       let budget_smp_remove = document.querySelector("#budget_smp_remove");
       budget_smp_remove.addEventListener("click", () => {
@@ -758,10 +819,7 @@
       integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
       crossorigin="anonymous"
     ></script>
-    <script
-      type="text/javascript"
-      src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"
-    ></script>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script
       type="text/javascript"
       src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"
@@ -884,7 +942,7 @@
           if (day_range.length - 1) {
             for (let i = 0; i < day_range.length - 1; i++) {
               $("#plan_container_1")
-                .clone()
+                .clone(true, true)
                 .appendTo(".clone")
                 .prop("id", "plan_container_" + (i + 2));
             }
