@@ -182,6 +182,7 @@
     <footer></footer>
 
     <script>
+      let tasks = [];
       /*plan list add button*/
       let btn_add = document.querySelector("#btn_add");
       btn_add.addEventListener("click", () => {
@@ -195,11 +196,15 @@
           location: "",
         };
 
+        tasks.push(task);
+        saveTasks();
+
         addToList(task);
 
         plan_input.value = "";
       });
 
+      //Function addToList
       function addToList(task) {
         let div = document.createElement("div");
         div.classList.add("task", "d-flex", "align-items-center", "m-1");
@@ -215,8 +220,11 @@
         btn_remove.innerHTML = '<i class="bi bi-x"></i>';
         div.appendChild(btn_remove);
 
+        //Remove Event
         btn_remove.addEventListener("click", () => {
           div.remove();
+          tasks = tasks.filter((t) => t !== task);
+          saveTasks();
         });
 
         let btn_gps = document.createElement("button");
@@ -236,6 +244,26 @@
 
         let planList = document.querySelector("#plan_list");
         planList.appendChild(div);
+      }
+
+      //Save
+      function saveTasks() {
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+      }
+
+      //Load
+      window.addEventListener("load", () => {
+        loadTasks();
+      });
+
+      function loadTasks() {
+        let lastTasks = localStorage.getItem("tasks");
+        if (!lastTasks) return;
+
+        tasks = JSON.parse(lastTasks);
+        tasks.forEach((t) => {
+          addToList(t);
+        });
       }
 
       /*remove sample*/
