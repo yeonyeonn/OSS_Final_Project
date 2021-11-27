@@ -12,7 +12,20 @@
       integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
       crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="style.css" type="text/css" />
+
+    <link rel="stylesheet" href="./style.css" type="text/css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css"
+      integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog=="
+      crossorigin="anonymous"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.1/font/bootstrap-icons.css"
+    />
 
     <link
       rel="stylesheet"
@@ -30,17 +43,30 @@
   </head>
 
   <body>
-    <body>
-      <header>
-        <!--Title Area-->
-        <div class="container" id="title_container">
-          <div class="item" id="title_input">
-            <input
-              class="form-control form-control-lg"
-              type="text"
-              placeholder="Enter trip title"
-              aria-label=".form-control-lg example"
+    <header>
+      <nav class="navbar navbar-light bg-light">
+        <div class="container-fluid">
+          <a class="navbar-brand fw-bold" href="#">
+            <img
+              src="./logo.png"
+              alt=""
+              width="30"
+              height="30"
+              class="d-inline-block align-text-top me-1"
             />
+            Travel Helper
+          </a>
+        </div>
+      </nav>
+      <!--Title Area-->
+      <div class="container" id="title_container">
+        <div class="item" id="title_input">
+          <input
+            class="form-control form-control-lg"
+            type="text"
+            placeholder="Enter trip title"
+            aria-label=".form-control-lg example"
+          />
           </div>
   
           <div class="item" id="date_input">
@@ -112,7 +138,7 @@
           bg-light
           rounded-3
         "
-        id="plan_container"
+        id="plan_container_1"
       >
         <div class="d-flex align-items-baseline ms-1" id="plan_date_area">
           <p class="fw-bold fs-3">|</p>
@@ -125,7 +151,10 @@
           />
         </div>
 
-        <div class="d-flex flex-fill align-items-strech" id="list_map_area">
+        <div
+          class="d-flex flex-fill align-items-strech px-2"
+          id="list_map_area"
+        >
           <div class="d-flex flex-column flex-grow-1 w-50" id="lists_area">
             <div class="flex-grow-1 h-50 rounded-2" id="plan_list_area">
               <div class="d-flex align-items-baseline" id="plan_input_area">
@@ -153,6 +182,7 @@
                 </div>
               </div>
             </div>
+            
             <div class="flex-grow-1 align-items-center h-50 rounded-2" id="budget_list_area">
               <!--Top of the budget area-->
               <div class="d-flex" id="buget_header">
@@ -208,6 +238,7 @@
           </div>
         </div>
       </div>
+      <div class="clone container" id="clone"></div>
     </main>
     <footer></footer>
 
@@ -330,6 +361,7 @@
     </script>
 
     <script>
+      let tasks = [];
       /*plan list add button*/
       let btn_add = document.querySelector("#btn_add");
       btn_add.addEventListener("click", () => {
@@ -343,11 +375,15 @@
           location: "",
         };
 
+        tasks.push(task);
+        saveTasks();
+        
         addToList(task);
 
         plan_input.value = "";
       });
 
+      //Function addToList
       function addToList(task) {
         let div = document.createElement("div");
         div.classList.add("task", "d-flex", "align-items-center", "m-1");
@@ -363,8 +399,11 @@
         btn_remove.innerHTML = '<i class="bi bi-x"></i>';
         div.appendChild(btn_remove);
 
+        //Remove Event
         btn_remove.addEventListener("click", () => {
           div.remove();
+          tasks = tasks.filter((t) => t !== task);
+          saveTasks();
         });
 
         let btn_gps = document.createElement("button");
@@ -373,8 +412,37 @@
         btn_gps.innerHTML = '<i class="bi bi-geo-alt-fill"></i>';
         div.appendChild(btn_gps);
 
+        /*gps button popup*/
+        btn_gps.addEventListener("click", () => {
+          window.open(
+            "./pop_up.html",
+            "address_input",
+            "width=400, height=100, left=500, top=350"
+          );
+        });
+
         let planList = document.querySelector("#plan_list");
         planList.appendChild(div);
+      }
+
+      //Save
+      function saveTasks() {
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+      }
+
+      //Load
+      window.addEventListener("load", () => {
+        loadTasks();
+      });
+
+      function loadTasks() {
+        let lastTasks = localStorage.getItem("tasks");
+        if (!lastTasks) return;
+
+        tasks = JSON.parse(lastTasks);
+        tasks.forEach((t) => {
+          addToList(t);
+        });
       }
 
       /*remove sample*/
@@ -383,8 +451,17 @@
         let div = document.querySelector(".task.sample");
         div.remove();
       });
+      let btn_smp_gps = document.querySelector("#btn_gps");
+      btn_smp_gps.addEventListener("click", () => {
+        window.open(
+          "./pop_up.html",
+          "address_input",
+          "width=400, height=100, left=500, top=350"
+        );
+      });
+    </script>
 
-
+    <script>
       /*budget add */
       let costTasks = [];
       
@@ -460,8 +537,6 @@
         });
 
         document.querySelector("#cost_list").appendChild(div);
-
-        
       }
       })
 
@@ -676,8 +751,7 @@
       });
     </script>
 
-    
-
+    <!--DO NOT TOUCH-->
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
@@ -702,6 +776,8 @@
     />
 
     <script type="text/javascript">
+      let st, ed;
+
       $("#demo").daterangepicker(
         {
           locale: {
@@ -731,18 +807,98 @@
           },
           startDate: new Date(),
           endDate: new Date(),
-          drops: "down", 
+          drops: "down",
         },
         function (start, end, label) {
-          console.log(
-            "New date range selected: " +
-              start.format("YYYY-MM-DD") +
-              " to " +
-              end.format("YYYY-MM-DD") +
-              " (predefined range: " +
-              label +
-              ")"
-          );
+          let dateText = document.querySelector(".date.text");
+          if (dateText !== "10.XX") {
+            $("#clone").empty();
+          }
+
+          st = start.format("YYYY-MM-DD");
+          ed = end.format("YYYY-MM-DD");
+          console.log(st + " to " + ed);
+
+          let st_date, ed_date;
+          st_date = st.split("-");
+          ed_date = ed.split("-");
+
+          let i = 1,
+            st_mon = +st_date[1],
+            st_day = +st_date[2],
+            ed_mon = +ed_date[1],
+            ed_day = +ed_date[2],
+            day_range = [],
+            mon_range = [];
+
+          //case of changed month
+          if (st_mon !== ed_mon) {
+            if (
+              st_mon === 1 ||
+              st_mon === 3 ||
+              st_mon === 5 ||
+              st_mon === 7 ||
+              st_mon === 8 ||
+              st_mon === 10 ||
+              st_mon === 12
+            ) {
+              while (ed_day + 1 !== i) {
+                while (st_day <= 31) {
+                  day_range.push(st_day++);
+                  mon_range.push(st_mon);
+                }
+                day_range.push(i++);
+                mon_range.push(ed_mon);
+              }
+            } else if (st_mon === 2) {
+              while (ed_day + 1 !== i) {
+                while (st_day <= 28) {
+                  day_range.push(st_day++);
+                  mon_range.push(st_mon);
+                }
+                day_range.push(i++);
+                mon_range.push(ed_mon);
+              }
+            } else {
+              while (ed_day + 1 !== i) {
+                while (st_day <= 30) {
+                  day_range.push(st_day++);
+                  mon_range.push(st_mon);
+                }
+                day_range.push(i++);
+                mon_range.push(ed_mon);
+              }
+            }
+          }
+          //case of same month
+          else {
+            while (st_day !== ed_day + 1) {
+              day_range.push(st_day++);
+              mon_range.push(st_mon);
+            }
+          }
+          console.log("day_range: ", day_range);
+          console.log("mon_range: ", mon_range);
+
+          if (day_range.length - 1) {
+            for (let i = 0; i < day_range.length - 1; i++) {
+              $("#plan_container_1")
+                .clone()
+                .appendTo(".clone")
+                .prop("id", "plan_container_" + (i + 2));
+            }
+          }
+
+          i = 0;
+          document.querySelectorAll(".date.text").forEach((date) => {
+            if (st_mon !== ed_mon) {
+            }
+            date.textContent = mon_range[i] + "." + day_range[i];
+            i++;
+          });
+
+          day_range = [];
+          mon_range = [];
         }
       );
     </script>

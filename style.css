@@ -6,14 +6,18 @@
   width: 200px;
 }
 
+.navbar {
+  padding-left: 50px;
+}
+
 #title_container {
   width: 1200px;
-  height: 80px;
+  height: 70px;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-items: end;
-  padding-top: 20px;
+  margin-top: 0px;
 }
 
 .form-control {
@@ -58,7 +62,7 @@
 #total_budget_container {
   margin-top: 35px;
   width: 1150px;
-  background-color: #d9e7f3;
+  background-color: #d3e4f1dc;
   height: 70px;
 }
 
@@ -72,38 +76,10 @@ h2 {
   margin-bottom: 0;
 }
 
-#total_input {
-  width: 120px;
-  background-color: #d9e7f3;
-  box-shadow: 0px 10px 0px -7px #f3f8fd, 0px 10px 0px -7px #ebebeb;
-  font-size: large;
-  font-style: bold;
-}
-
-#budget_input {
-  width: 120px;
-  background-color: #d9e7f3;
-  box-shadow: 0px 10px 0px -7px #f3f8fd, 0px 10px 0px -7px #ebebeb;
-  font-size: large;
-  font-style: bold;
-}
-
-#total_input:focus {
-  outline: none;
-  border: 0ch;
-  box-shadow: 0px 10px 0px -7px #4ea6ea, 0px 10px 0px -7px #4ea6ea;
-}
-
-#budget_input:focus {
-  outline: none;
-  border: 0ch;
-  box-shadow: 0px 10px 0px -7px #4ea6ea, 0px 10px 0px -7px #4ea6ea;
-}
-
 #total_cost,
 #budget_cost {
   font-weight: bold;
-  margin-left: 15px;
+  margin-left: 20px;
   color: rgb(46, 46, 145);
 }
 
@@ -139,7 +115,7 @@ label {
   margin-left: 10px;
 }
 
-#plan_container {
+.plan.container {
   margin-top: 10px;
   width: 1150px;
   height: 510px;
@@ -163,12 +139,13 @@ p {
   margin-left: 10px;
 }
 #budget_list_area {
-  margin-top: 5px;
+  margin-top: 10px;
 }
 #plan_list_area {
   padding: 10px;
   border: 2px solid;
   border-color: #fad91d;
+  overflow: auto;
 }
 #plan_input {
   margin-left: 10px;
@@ -200,6 +177,26 @@ p {
   border-color: rgb(58, 160, 255);
   overflow: auto;
 }
+.task {
+  padding-bottom: 2px;
+  box-shadow: -2px 4px 0px -3px #bbbbbb;
+}
+.btn-danger {
+  width: fit-content;
+  height: fit-content;
+  padding: 0px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+#btn_gps {
+  border: 1px solid #000000;
+  width: fit-content;
+  height: fit-content;
+  padding: 0px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
 #costPlan_input {
   font-size: medium;
   margin-left: 10px;
@@ -272,26 +269,6 @@ input::-webkit-inner-spin-button {
 
 .eachCost {
   color: rgb(46, 46, 145);
-}
-
-.task {
-  padding-bottom: 2px;
-  box-shadow: -2px 4px 0px -3px #bbbbbb;
-}
-.btn-danger {
-  width: fit-content;
-  height: fit-content;
-  padding: 0px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-#btn_gps {
-  border: 1px solid #000000;
-  width: fit-content;
-  height: fit-content;
-  padding: 0px;
-  padding-left: 5px;
-  padding-right: 5px;
 }
 
 .right-box {

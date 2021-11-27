@@ -20,4 +20,8 @@
     "url": "https://github.com/ez615/OSS_Final_Project/issues"
   },
   "homepage": "https://github.com/ez615/OSS_Final_Project#readme"
+=======
+  "dependencies": {
+    "bootstrap-icons": "^1.7.1"
+  }
 }
