@@ -117,7 +117,7 @@ label {
 }
 
 #total_text,
-#budget_text {
+#cost_text {
   margin-left: 15px;
   color: rgb(46, 46, 145);
 }
@@ -217,14 +217,14 @@ p {
   box-shadow: -5px 8px 0px -7px #000000;
 }
 
-#budget_input {
+#cost_input {
   font-size: medium;
   margin-left: 10px;
   margin-right: 5px;
   border: 0px;
   box-shadow: -5px 8px 0px -7px #bbbbbb;
 }
-#budget_input:focus {
+#cost_input:focus {
   outline: none;
   box-shadow: -5px 8px 0px -7px #000000;
 }

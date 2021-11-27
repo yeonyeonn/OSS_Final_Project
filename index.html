@@ -82,7 +82,7 @@
           <i class="bi bi-coin fa-2x ms-3"></i>
           <h4 id="total_text">Total</h4>
           <h4 id="total_cost">0</h4>
-          <h4 id="budget_text">&#160 Budget</h4>
+          <h4 id="cost_text">&#160 Budget</h4>
           <h4 id="budget_cost">0</h4>
           <h3 id="currency"></h3>
         </div>
@@ -181,7 +181,7 @@
                 <input
                     type="number"
                     class="bg-light flex-fill"
-                    id="budget_input"
+                    id="cost_input"
                     placeholder="Cost"
                     required
                   />
@@ -212,6 +212,122 @@
     <footer></footer>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+      let curr = [{date: "", data:[]}]
+
+      function loadCurr() {
+        let lastCurr = localStorage.getItem("curr");
+        if (!lastCurr) return;
+
+        curr = JSON.parse(lastCurr);
+      }
+
+      function saveCurr() {
+        localStorage.setItem("curr", JSON.stringify(curr));
+      }
+
+      loadCurr(curr)
+
+      var mode = 1;
+      $(document).ready(function () {
+        $("#btn_mode").click(function (e) {
+          e.preventDefault();
+          mode === 1 ? (mode = 2) : (mode = 1);
+          let currency1 = "KRW"; // currency
+          let currency2 = $("#to_currency").val(); // currency
+          let total_cost = deleteComma(document.querySelector("#total_cost").innerText);
+          let budget_cost = deleteComma(document.querySelector("#budget_cost").innerText);
+          let total_sum = deleteComma(document.querySelector("#total_sum").innerText);
+          let budget_sum = document.querySelector("#budget_sum").value;
+          let eachCost = document.querySelectorAll(".eachCost"); //array
+
+          // api
+          var url = `http://data.fixer.io/api/latest?access_key=aacb92a146d90f4e06777887e2303beb`;
+
+          let currency1_rates;
+          let currency2_rates;
+          let total_exchanged;
+          let budget_exchanged;
+          let totalSum_exchanged;
+          let budgetSum_exchanged;
+          let eachCost_exchanged; //array
+
+          if (($("#to_currency").val() === "Select Currency") || (total_cost === 0 && budget_cost === 0)) {
+            document.querySelector("#to_currency").className = "form-select me-auto border-danger is-invalid border-3";
+            return;
+          } else {
+            document.querySelector("#to_currency").className = "form-select me-auto border-primary border-3";
+          }
+
+          // Getting Exchange Rates
+          if (curr[curr.length-1].date !== new Date().toLocaleDateString()) {
+            $.ajax({
+            method: "GET",
+            url: url,
+            async: false,
+            success: function (data) {
+              currency1_rates = data["rates"][currency1];
+              currency2_rates = data["rates"][currency2];
+              console.log(data);
+
+              var day = {
+              date: new Date().toLocaleDateString(),
+              data: data
+              }
+
+              curr.push(day);
+              saveCurr(curr);
+            },
+
+          });
+          } else {
+            currency1_rates = curr[curr.length-1].data["rates"][currency1];
+            currency2_rates = curr[curr.length-1].data["rates"][currency2];
+          }
+          
+          // Calculating
+          if (mode === 2) { // from other currency to KRW
+            total_exchanged = ((1 / currency2_rates) * currency1_rates * total_cost).toFixed(2)
+            budget_exchanged = ((1 / currency2_rates) * currency1_rates * budget_cost).toFixed(2);
+            totalSum_exchanged = ((1 / currency2_rates) * currency1_rates * total_sum).toFixed(2);
+            budgetSum_exchanged = ((1 / currency2_rates) * currency1_rates * budget_sum).toFixed(2);
+
+            for (let i = 0; i < eachCost.length; i++) { // plans in budget list
+              if (eachCost[i].textContent === "Cost") continue; // if eachCost[i] is the sample plan, continue the for loop
+              let eachCost_exchanged = ((1 / currency2_rates) * currency1_rates * deleteComma(eachCost[i].textContent)).toFixed(2);
+              let eachCostSymbol = exchangeList.find((o) => o.currency === "KRW").symbol;
+              document.querySelectorAll(".eachSymbol")[i].textContent = eachCostSymbol;
+              eachCost[i].textContent = addComma(eachCost_exchanged);
+            }
+
+            document.querySelector("#currency").textContent = exchangeList.find((o) => o.currency === "KRW").symbol;
+            document.querySelector("#sumCurrency").textContent = exchangeList.find((o) => o.currency === "KRW").symbol;
+          } 
+          else { // from KRW to other currency
+            total_exchanged = ((1 / currency1_rates) * currency2_rates * total_cost).toFixed(2);
+            budget_exchanged = ((1 / currency1_rates) * currency2_rates * budget_cost).toFixed(2);
+            totalSum_exchanged = ((1 / currency1_rates) * currency2_rates * total_sum).toFixed(2);
+            budgetSum_exchanged = ((1 / currency1_rates) * currency2_rates * budget_sum).toFixed(2);
+
+            for (let i = 0; i < eachCost.length; i++) {
+              if (eachCost[i].textContent === "Cost") continue;
+              let eachCost_exchanged = ((1 / currency1_rates) * currency2_rates * deleteComma(eachCost[i].textContent)).toFixed(2);
+              let eachCostSymbol = exchangeList.find((o) => o.currency === $("#to_currency option:selected").text()).symbol;
+              document.querySelectorAll(".eachSymbol")[i].textContent = eachCostSymbol;
+              eachCost[i].textContent = addComma(eachCost_exchanged);
+            }
+
+            document.querySelector("#currency").textContent = exchangeList.find((o) => o.currency === $("#to_currency option:selected").text()).symbol;
+            document.querySelector("#sumCurrency").textContent = exchangeList.find((o) => o.currency === $("#to_currency option:selected").text()).symbol;
+          }
+
+          document.querySelector("#total_cost").textContent = addComma(total_exchanged);
+          document.querySelector("#budget_cost").textContent = addComma(budget_exchanged);
+          document.querySelector("#total_sum").textContent = addComma(totalSum_exchanged);
+          document.querySelector("#budget_sum").value = addComma(budgetSum_exchanged);
+        });
+      });
+    </script>
 
     <script>
       /*plan list add button*/
@@ -271,19 +387,19 @@
 
       /*budget add */
       let costTasks = [];
-
+      
       let budgetButton = document.querySelector('#budgetAdd');
       budgetButton.addEventListener("click", () => {
 
         let costPlan_input = document.querySelector("#costPlan_input");
-        let budget_input = document.querySelector("#budget_input");
+        let cost_input = document.querySelector("#cost_input");
         let costPlan_text = costPlan_input.value;
-        let budget_text = budget_input.value;
+        let cost_text = cost_input.value;
         let total_cost = deleteComma(document.querySelector("#total_cost").innerText);
         let total_sum = deleteComma(document.querySelector("#total_sum").innerText);
         let budget_sum = document.querySelector("#budget_sum").value;
 
-        if (!costPlan_text.length || !budget_text.length) return;
+        if (!costPlan_text.length || !cost_text.length) return;
 
         if ($("#to_currency").val() === "Select Currency") {
           document.querySelector("#to_currency").className = "form-select me-auto border-danger is-invalid border-3";
@@ -294,19 +410,19 @@
 
         let costTask = {
           plan: costPlan_text,
-          cost: budget_text,
+          cost: cost_text,
+          mode: mode
         };
 
         costTasks.push(costTask);
         addToCost(costTask);
 
         costPlan_input.value = "";
-        budget_input.value = "";
+        cost_input.value = "";
 
 
       // Add cost plan function
       function addToCost(costTask) {
-
         let div = document.createElement("div");
         div.className = "cost d-flex align-items-center m-1";
 
@@ -334,12 +450,12 @@
         div.appendChild(buttonRemove);
 
         buttonRemove.addEventListener("click", () => {
-          div.remove();
           let total_sum = deleteComma(document.querySelector("#total_sum").innerText);
           let total_cost = deleteComma(document.querySelector("#total_cost").innerText);
-
-          document.querySelector("#total_sum").innerText = addComma(total_sum - parseInt(costTask.cost));
-          document.querySelector("#total_cost").innerText = addComma(total_cost - parseInt(costTask.cost));
+          document.querySelector("#total_sum").textContent = addComma(total_sum - deleteComma(div.childNodes[2].textContent));
+          document.querySelector("#total_cost").textContent = addComma(total_cost - deleteComma(div.childNodes[2].textContent));
+          div.remove();
+          
           costTasks = costTasks.filter((t) => t !== costTask);
         });
 
@@ -560,123 +676,7 @@
       });
     </script>
 
-    <script>
-      let curr = [{date: "", data:[]}]
-
-      function loadCurr() {
-        let lastCurr = localStorage.getItem("curr");
-        if (!lastCurr) return;
-
-        curr = JSON.parse(lastCurr);
-      }
-
-      function saveCurr() {
-        localStorage.setItem("curr", JSON.stringify(curr));
-      }
-
-      loadCurr(curr)
-
-      var mode = 1;
-      $(document).ready(function () {
-        $("#btn_mode").click(function (e) {
-          e.preventDefault();
-          mode === 1 ? (mode = 2) : (mode = 1);
-          alert("mode")
-          alert(mode)
-          let currency1 = "KRW"; // currency
-          let currency2 = $("#to_currency").val(); // currency
-          let total_cost = deleteComma(document.querySelector("#total_cost").innerText);
-          let budget_cost = deleteComma(document.querySelector("#budget_cost").innerText);
-          let total_sum = deleteComma(document.querySelector("#total_sum").innerText);
-          let budget_sum = document.querySelector("#budget_sum").value;
-          let eachCost = document.querySelectorAll(".eachCost"); //array
-
-          // api
-          var url = `http://data.fixer.io/api/latest?access_key=aacb92a146d90f4e06777887e2303beb`;
-
-          let currency1_rates;
-          let currency2_rates;
-          let total_exchanged;
-          let budget_exchanged;
-          let totalSum_exchanged;
-          let budgetSum_exchanged;
-          let eachCost_exchanged; //array
-
-          if (($("#to_currency").val() === "Select Currency") || (total_cost === 0 && budget_cost === 0)) {
-            document.querySelector("#to_currency").className = "form-select me-auto border-danger is-invalid border-3";
-            return;
-          } else {
-            document.querySelector("#to_currency").className = "form-select me-auto border-primary border-3";
-          }
-
-          // Getting Exchange Rates
-          if (curr[curr.length-1].date !== new Date().toLocaleDateString()) {
-            $.ajax({
-            method: "GET",
-            url: url,
-            async: false,
-            success: function (data) {
-              currency1_rates = data["rates"][currency1];
-              currency2_rates = data["rates"][currency2];
-              console.log(data);
-
-              var day = {
-              date: new Date().toLocaleDateString(),
-              data: data
-              }
-
-              curr.push(day);
-              saveCurr(curr);
-            },
-
-          });
-          } else {
-            currency1_rates = curr[curr.length-1].data["rates"][currency1];
-            currency2_rates = curr[curr.length-1].data["rates"][currency2];
-          }
-          
-          // Calculating
-          if (mode === 2) { // from other currency to KRW
-            total_exchanged = ((1 / currency2_rates) * currency1_rates * total_cost).toFixed(2)
-            budget_exchanged = ((1 / currency2_rates) * currency1_rates * budget_cost).toFixed(2);
-            totalSum_exchanged = ((1 / currency2_rates) * currency1_rates * total_sum).toFixed(2);
-            budgetSum_exchanged = ((1 / currency2_rates) * currency1_rates * budget_sum).toFixed(2);
-
-            for (let i = 0; i < eachCost.length; i++) { // plans in budget list
-              if (eachCost[i].textContent === "Cost") continue; // if eachCost[i] is the sample plan, continue the for loop
-              let eachCost_exchanged = ((1 / currency2_rates) * currency1_rates * deleteComma(eachCost[i].textContent)).toFixed(2);
-              let eachCostSymbol = exchangeList.find((o) => o.currency === "KRW").symbol;
-              document.querySelectorAll(".eachSymbol")[i].textContent = eachCostSymbol;
-              eachCost[i].textContent = addComma(eachCost_exchanged);
-            }
-
-            document.querySelector("#currency").textContent = exchangeList.find((o) => o.currency === "KRW").symbol;
-            document.querySelector("#sumCurrency").textContent = exchangeList.find((o) => o.currency === "KRW").symbol;
-          } else { // from KRW to other currency
-            total_exchanged = ((1 / currency1_rates) * currency2_rates * total_cost).toFixed(2);
-            budget_exchanged = ((1 / currency1_rates) * currency2_rates * budget_cost).toFixed(2);
-            totalSum_exchanged = ((1 / currency1_rates) * currency2_rates * total_sum).toFixed(2);
-            budgetSum_exchanged = ((1 / currency1_rates) * currency2_rates * budget_sum).toFixed(2);
-
-            for (let i = 0; i < eachCost.length; i++) {
-              if (eachCost[i].textContent === "Cost") continue;
-              let eachCost_exchanged = ((1 / currency1_rates) * currency2_rates * deleteComma(eachCost[i].textContent)).toFixed(2);
-              let eachCostSymbol = exchangeList.find((o) => o.currency === $("#to_currency option:selected").text()).symbol;
-              document.querySelectorAll(".eachSymbol")[i].textContent = eachCostSymbol;
-              eachCost[i].textContent = addComma(eachCost_exchanged);
-            }
-
-            document.querySelector("#currency").textContent = exchangeList.find((o) => o.currency === $("#to_currency option:selected").text()).symbol;
-            document.querySelector("#sumCurrency").textContent = exchangeList.find((o) => o.currency === $("#to_currency option:selected").text()).symbol;
-          }
-
-          document.querySelector("#total_cost").textContent = addComma(total_exchanged);
-          document.querySelector("#budget_cost").textContent = addComma(budget_exchanged);
-          document.querySelector("#total_sum").textContent = addComma(totalSum_exchanged);
-          document.querySelector("#budget_sum").value = addComma(budgetSum_exchanged);
-        });
-      });
-    </script>
+    
 
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
