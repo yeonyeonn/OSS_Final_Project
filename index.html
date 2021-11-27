@@ -160,7 +160,11 @@
               <div class="p-1 ms-1" id="plan_list">
                 <div class="task sample d-flex align-items-center m-1">
                   <span class="me-auto">Sample plan</span>
-                  <button class="btn btn-danger me-1" id="btn_smp_remove">
+                  <button
+                    class="btn btn-danger me-1"
+                    id="btn_smp_remove"
+                    onclick="btn_remove_onclick(this.parentNode, this.previousSibling.textContent)"
+                  >
                     <i class="bi bi-x"></i>
                   </button>
                   <button class="btn" id="btn_gps">
@@ -340,36 +344,12 @@
       let locations = [];
       let popup;
 
-      /*plan list add button*/
-      /*let btn_add = document.querySelector("#btn_add");
-      btn_add.addEventListener("click", () => {
-        console.log("addEventListener");
-        let plan_input = document.querySelector("#plan_input");
-        let task = plan_input.value;
-
-        if (!task.length) return;
-
-        //popup html
-        popup = window.open(
-          "./pop_up.html",
-          "address_input",
-          "width=400, height=100, left=500, top=350"
-        );
-
-        tasks.push(task);
-        saveTasks();
-
-        addToList(task);
-
-        plan_input.value = "";
-      });*/
-
       function btn_add_onclick(id) {
-        let idx = +id.split("_")[2] - 1;
+        let idx = +id.split("_")[2] - 1; //0부터 시작
         console.log(idx);
 
         let plan_input = document.querySelectorAll("#plan_input")[idx];
-        let task = document.querySelectorAll("#plan_input")[idx].value;
+        let task = plan_input.value;
 
         //let task = plan_input.value;
         console.log("task : " + task);
@@ -391,6 +371,16 @@
         plan_input.value = "";
       }
 
+      function btn_remove_onclick(div, task) {
+        console.log("onclick");
+        div.remove();
+
+        console.log("remove");
+        tasks = tasks.filter((t) => t !== task);
+
+        saveTasks();
+      }
+
       //Function addToList
       function addToList(task) {
         console.log("addToList");
@@ -406,14 +396,18 @@
         let btn_remove = document.createElement("button");
         btn_remove.className = "btn btn-danger me-1";
         btn_remove.innerHTML = '<i class="bi bi-x"></i>';
+        btn_remove.setAttribute(
+          "onclick",
+          "btn_remove_onclick(this.parentNode, this.previousSibling.textContent)"
+        );
         div.appendChild(btn_remove);
 
         //Remove Event
-        btn_remove.addEventListener("click", () => {
+        /*btn_remove.addEventListener("click", () => {
           div.remove();
           tasks = tasks.filter((t) => t !== task);
           saveTasks();
-        });
+        });*/
 
         let btn_gps = document.createElement("button");
         btn_gps.className = "btn";
@@ -446,11 +440,11 @@
       }
 
       /*remove sample*/
-      let btn_smp_remove = document.querySelector("#btn_smp_remove");
+      /*let btn_smp_remove = document.querySelector("#btn_smp_remove");
       btn_smp_remove.addEventListener("click", () => {
         let div = document.querySelector(".task.sample");
         div.remove();
-      });
+      });*/
       let btn_smp_gps = document.querySelector("#btn_gps");
       btn_smp_gps.addEventListener("click", () => {
         window.open(
