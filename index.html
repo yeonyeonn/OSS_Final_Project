@@ -243,18 +243,6 @@
                 </button>
               </div>
               <div class="p-1 ms-1" id="cost_list">
-                <div class="cost sample d-flex align-items-center m-1">
-                  <span class="me-auto">Sample plan</span>
-                  <span class="eachSymbol me-1"></span>
-                  <span class="eachCost me-3">Cost</span>
-                  <button
-                    class="btn btn-danger me-1"
-                    id="budget_smp_remove"
-                    onclick="budgetRemove_onclick(this.parentNode, this.previousSibling.previousSibling.previousSibling.textContent, this.previousSibling.textContent, this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.id)"
-                  >
-                    <i class="bi bi-x"></i>
-                  </button>
-                </div>
               </div>
             </div>
           </div>
@@ -331,9 +319,7 @@
           let budget_cost = deleteComma(document.querySelector("#budget_cost").innerText);
           let totalSumArray = document.querySelectorAll("#total_sum")
           let budgetSumArray = document.querySelectorAll("#budget_sum")
-          let eachCostArray = document.querySelectorAll(".eachCost"); //array
-          //let total_sum = deleteComma(document.querySelector("#total_sum").innerText);
-          //let budget_sum = document.querySelector("#budget_sum").value;
+          let eachCostArray = document.querySelectorAll(".eachCost");
 
           // api
           var url = `http://data.fixer.io/api/latest?access_key=aacb92a146d90f4e06777887e2303beb`;
@@ -472,7 +458,8 @@
       var cost_text;
       var total_cost;
       var total_sum;
-      var budget_sum; 
+      var budget_sum;
+      var finalTotal;
         
       function budgetAdd_onclick(id) {
         let idx = +id.split("_")[2] - 1; 
@@ -504,7 +491,13 @@
         };
 
         costTasks.push(costTask);
+        saveCosts();
+
         addToCost(costTask, idx);
+
+        total_cost = deleteComma(document.querySelector("#total_cost").innerText); // number
+        
+        saveTotal();
 
         costPlan_input.value = "";
         cost_input.value = "";
@@ -519,10 +512,13 @@
 
         document.querySelector("#total_cost").textContent = addComma(total_cost - deleteComma(div.childNodes[2].textContent));
         document.querySelectorAll("#total_sum")[idx].textContent = addComma(total_sum - deleteComma(div.childNodes[2].textContent));
-          
+        total_cost = deleteComma(document.querySelector("#total_cost").innerText);
+        saveTotal();
+
         div.remove();
         costTasks = costTasks.filter((t) => t.plan !== plan && t.index !== idx);
-        saveTasks();
+        saveCosts();
+        
       }
 
       //Function addToCost
@@ -560,7 +556,27 @@
 
         document.querySelectorAll("#cost_list")[idx].appendChild(div);
       }
-  
+
+      function saveCosts() {
+        localStorage.setItem("costTasks", JSON.stringify(costTasks));
+      }
+
+      function saveTotal() {
+        localStorage.setItem("total_cost", JSON.stringify(total_cost));
+        console.log(localStorage)
+      }
+
+      function loadCosts() {
+        let lastCostTasks = localStorage.getItem("costTasks");
+        if (!lastCostTasks) return;
+
+        costTasks = JSON.parse(lastCostTasks);
+        
+        costTasks.forEach((t) => {
+          addToCost(t, t.index);
+        });
+      }
+
       // Function budgetChange
       function budgetChange() {
         let budgets = document.querySelectorAll("#budget_sum");
@@ -963,12 +979,16 @@
         console.log(idx);
 
         let plan_input = document.querySelectorAll("#plan_input")[idx];
-        let task = plan_input.value;
+        let plan = plan_input.value;
+        let task = {
+          plan: plan,
+          index: idx
+        }
 
         //let task = plan_input.value;
-        console.log("task : " + task);
+        console.log("task : " + plan);
 
-        if (!task.length) return;
+        if (!plan_input.value.length) return;
 
         //popup html
         /*popup = window.open(
@@ -980,30 +1000,31 @@
         tasks.push(task);
         saveTasks();
 
-        addToList(task, idx);
+        addToList(plan, idx);
 
         plan_input.value = "";
       }
 
-      function btn_remove_onclick(div, task) {
+      function btn_remove_onclick(div, plan) {
         console.log("onclick");
         div.remove();
 
         console.log("remove");
-        tasks = tasks.filter((t) => t !== task);
-
+        console.log(tasks)
+        tasks = tasks.filter((t) => t.plan !== plan);
+        console.log(tasks)
         saveTasks();
       }
 
       //Function addToList
-      function addToList(task, idx) {
+      function addToList(plan, idx) {
         console.log("addToList");
         let div = document.createElement("div");
         div.classList.add("task", "d-flex", "align-items-center", "m-1");
 
         let span = document.createElement("span");
         span.className = "me-auto";
-        span.textContent = task;
+        span.textContent = plan;
         div.appendChild(span);
 
         /*plan list remove button*/
@@ -1016,13 +1037,6 @@
         );
         div.appendChild(btn_remove);
 
-        //Remove Event
-        /*btn_remove.addEventListener("click", () => {
-          div.remove();
-          tasks = tasks.filter((t) => t !== task);
-          saveTasks();
-        });*/
-
         let btn_gps = document.createElement("button");
         btn_gps.className = "btn";
         btn_gps.id = "btn_gps";
@@ -1032,7 +1046,7 @@
         let planList = document.querySelectorAll("#plan_list");
         planList[idx].appendChild(div);
       }
-
+  
       //Save
       function saveTasks() {
         localStorage.setItem("tasks", JSON.stringify(tasks));
@@ -1040,10 +1054,12 @@
 
       //Load
       window.addEventListener("load", () => {
-        loadTasks();
-        loadTexts();
         loadDay();
         loadContainer();
+        loadTasks();
+        loadTexts();
+        loadCosts();
+        loadTotal();
       });
 
       function loadTasks() {
@@ -1051,8 +1067,9 @@
         if (!lastTasks) return;
 
         tasks = JSON.parse(lastTasks);
+        
         tasks.forEach((t) => {
-          addToList(t);
+          addToList(t.plan, t.index);
         });
       }
 
@@ -1069,6 +1086,12 @@
 
         let nowSymbol = localStorage.getItem("symbol");
         document.querySelector("#currency").value = nowSymbol;
+      }
+
+      function loadTotal() {
+        let total_cost = localStorage.getItem("total_cost");
+        if (!total_cost) return;
+        document.querySelector("#total_cost").textContent = addComma(total_cost);
       }
 
       function loadDay() {
@@ -1106,8 +1129,6 @@
           }
         }
 
-        
-
         console.log(mon_range);
         i = 0;
         document.querySelectorAll(".date.text").forEach((date) => {
@@ -1127,6 +1148,37 @@
           "width=400, height=100, left=500, top=350"
         );
       });
+
+      /*
+      let daytitles = [];
+      let daytitles_input = document.querySelectorAll("#day_title_input");
+
+      for (let j = 0; j < day_range.length; j++) {
+        if ()
+        daytitles[j] = ""
+        
+        
+      } */
+
+
+      /*
+      let daytitles = {
+        date: "",
+        title: ""
+      }
+
+      let daytitles_input = document.querySelectorAll("#day_title_input");
+      daytitles_input.forEach((e) => {
+        e.addEventListener("input", () => {
+          console.log(this);
+          let daytitle = this.value;
+          //let dayindex = this.parentNode.parentNode.id;
+          console.log(daytitle);
+          //console.log(dayindex);
+      })
+      
+        //localStorage.setItem("companies", companies);
+      }); */
     </script>
   </body>
 </html>
