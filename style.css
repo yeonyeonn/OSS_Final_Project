@@ -1,6 +1,19 @@
 0.navbar {
   padding-left: 50px;
 }
+
+.form-select {
+  width: 120px;
+}
+
+.form-control {
+  width: 200px;
+}
+
+.navbar {
+  padding-left: 50px;
+}
+
 #title_container {
   width: 1200px;
   height: 70px;
@@ -56,21 +69,46 @@
   background-color: #d3e4f1dc;
   height: 70px;
 }
+
+.bi.bi-coin {
+  color: rgb(46, 46, 145);
+}
+
 h4,
+h3,
 h2 {
   margin-bottom: 0;
 }
-#total_text {
-  margin-left: 30px;
-  color: rgb(46, 46, 145);
-}
-#budget_text,
+
 #total_cost,
-#budget_cost,
-#currency {
+#budget_cost {
+  font-weight: bold;
   margin-left: 20px;
   color: rgb(46, 46, 145);
 }
+
+#to_currency {
+  font-weight: bold;
+  width: 210px;
+}
+
+label {
+  font-size: small;
+}
+
+#total_text,
+#cost_text {
+  margin-left: 15px;
+  color: rgb(46, 46, 145);
+}
+
+#currency {
+  font-weight: bold;
+  margin-left: 20px;
+  color: rgb(46, 46, 145);
+  text-shadow: 2px 2px 0px rgba(46, 46, 145, 0.384);
+}
+
 #btns_total_budget {
   margin-right: 10px;
 }
@@ -81,7 +119,7 @@ h2 {
   margin-left: 10px;
 }
 
-#plan_container {
+.plan.container {
   margin-top: 10px;
   width: 1150px;
   height: 510px;
@@ -141,6 +179,7 @@ p {
   padding: 10px;
   border: 2px solid;
   border-color: rgb(58, 160, 255);
+  overflow: auto;
 }
 .task {
   padding-bottom: 2px;
@@ -161,11 +200,11 @@ p {
   padding-left: 5px;
   padding-right: 5px;
 }
+
 #map {
   height: 100%;
 }
 
-/* Optional: Makes the sample page fill the window. */
 html,
 body {
   height: 100%;
@@ -246,5 +285,83 @@ body {
 #target {
   width: 345px;
 }
-      
-      
+
+#costPlan_input {
+  font-size: medium;
+  margin-left: 10px;
+  margin-right: 5px;
+  border: 0px;
+  box-shadow: -5px 8px 0px -7px #bbbbbb;
+}
+
+#cost_list {
+  margin-top: 5px;
+}
+
+#costPlan_input:focus {
+  outline: none;
+  box-shadow: -5px 8px 0px -7px #000000;
+}
+
+#cost_input {
+  font-size: medium;
+  margin-left: 10px;
+  margin-right: 5px;
+  border: 0px;
+  box-shadow: -5px 8px 0px -7px #bbbbbb;
+}
+#cost_input:focus {
+  outline: none;
+  box-shadow: -5px 8px 0px -7px #000000;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+#budget_list {
+  margin-top: 5px;
+}
+
+#budget_sum {
+  width: 90px;
+  color: rgb(46, 46, 145);
+  font-size: medium;
+  font-weight: bold;
+  margin-left: 10px;
+  margin-right: 5px;
+  border: 0px;
+  box-shadow: -5px 8px 0px -7px #bbbbbb;
+}
+
+#budget_sum:focus {
+  outline: none;
+  box-shadow: -5px 8px 0px -7px #000000;
+}
+
+.cost {
+  padding-bottom: 2px;
+  box-shadow: -2px 4px 0px -3px #bbbbbb;
+}
+
+#budgetAdd {
+  background-color: rgb(58, 160, 255);
+  width: fit-content;
+  height: fit-content;
+  font-size: 16px;
+  color: #f7f7f7;
+  padding: 2px;
+  padding-left: 7px;
+  padding-right: 7px;
+}
+
+.eachCost {
+  color: rgb(46, 46, 145);
+}
+
+.right-box {
+  float: right;
+  color: rgb(46, 46, 145);
+}
+
