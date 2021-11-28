@@ -131,6 +131,7 @@ p {
 }
 #day_date_text {
   margin-left: 10px;
+  font-weight: bold;
 }
 #day_title_input {
   width: 500px;
@@ -138,6 +139,10 @@ p {
   font-size: large;
   font-style: bold;
   margin-left: 20px;
+}
+#day_title_input:focus {
+  outline: none;
+  box-shadow: -5px 8px 0px -7px #000000;
 }
 #map_area {
   margin-left: 10px;
@@ -258,9 +263,10 @@ p {
   font-size: 15px;
   font-weight: 300;
   margin-left: 12px;
+  margin-top: 3px;
   padding: 0 11px 0 13px;
   text-overflow: ellipsis;
-  width: 400px;
+  width: 250px;
 }
 
 #pac-input:focus {
