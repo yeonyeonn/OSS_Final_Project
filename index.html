@@ -27,6 +27,18 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.1/font/bootstrap-icons.css"
     />
 
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css"
+      integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog=="
+      crossorigin="anonymous"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.1/font/bootstrap-icons.css"
+    />
+
     <title>Travel Helper (가제)</title>
   </head>
 
@@ -59,9 +71,9 @@
             placeholder="Enter trip title"
             aria-label=".form-control-lg example"
           />
-        </div>
-
-        <div class="item" id="date_input">
+          </div>
+  
+          <div class="item" id="date_input">
           <input
             class="form-control form-control-sm"
             type="text"
@@ -97,20 +109,27 @@
         id="total_budget_container"
       >
         <div class="d-flex align-items-center" id="total_buget_text_area">
-          <!--this text should be set whenever budget list is changed-->
-          <h4 id="total_text">Total:</h4>
+          <i class="bi bi-coin fa-2x ms-3"></i>
+          <h4 id="total_text">Total</h4>
           <h4 id="total_cost">0</h4>
-          <h4 id="budget_text">/ Budget:</h4>
+          <h4 id="cost_text">&#160 Budget</h4>
           <h4 id="budget_cost">0</h4>
-          <h2 id="currency">$</h2>
+          <h3 id="currency"></h3>
         </div>
-        <div id="btns_total_budget">
-          <button type="button" class="btn btn-warning" id="btn_mode">
+        <div class="d-flex align-items-center" id="btns_total_budget">
+          <button type="button" class="btn btn-warning me-2" id="btn_mode">
             <i class="fas fa-exchange-alt"></i>
           </button>
-          <button type="button" class="btn me-auto bg-primary" id="btn_dollar">
-            should be changed to select
-          </button>
+
+          <select
+            class="form-select me-auto border-primary border-3"
+            id="to_currency"
+            required
+            aria-label="select example"
+            
+          >
+            <option selected>Select Currency</option>
+          </select>
         </div>
       </div>
       <!--Main Plan Area-->
@@ -177,10 +196,62 @@
                 </div>
               </div>
             </div>
+            
+            <div class="flex-grow-1 align-items-center h-50 rounded-2" id="budget_list_area">
+              <!--Top of the budget area-->
+              <div class="d-flex" id="buget_header">
+                <h6 class="fw-bold me-auto">BUDGET</h6>
+                <h6 class="fw-bold right-box mx-1">Total</h6>
+                <h6 class="fw-bold right-box mx-1" id="total_sum">0</h6>
+                <h6 class="fw-bold right-box ms-3">Budget</h6>
+                <input
+                    type="number"
+                    class="bg-light"
+                    id="budget_sum"
+                    placeholder="0"
+                    onchange="budgetChange()"
+                  />
+                <h6 class="fw-bold right-box ms-1 me-2" id="sumCurrency"></h6>
+              </div>
 
-            <div class="flex-grow-1 h-50 rounded-2" id="budget_list_area">
-              <!--Fill budget list here-->
-              budget
+              <!--Budget list input area-->
+              <div class="d-flex align-items-center mt-3">
+                <input
+                    type="text"
+                    class="bg-light flex-fill"
+                    id="costPlan_input"
+                    placeholder="Plan"
+                  />
+                <input
+                    type="number"
+                    class="bg-light flex-fill"
+                    id="cost_input"
+                    placeholder="Cost"
+                    required
+                  />
+                <button
+                  type="button"
+                  class="btn"
+                  id="budgetAdd"
+                  onclick="budgetAdd_onclick(this.parentNode.parentNode.parentNode.parentNode.parentNode.id)"
+                >
+                  <i class="bi bi-plus-lg"></i>Add
+                </button>
+              </div>
+              <div class="p-1 ms-1" id="cost_list">
+                <div class="cost sample d-flex align-items-center m-1">
+                  <span class="me-auto">Sample plan</span>
+                  <span class="eachSymbol me-1"></span>
+                  <span class="eachCost me-3">Cost</span>
+                  <button
+                    class="btn btn-danger me-1"
+                    id="budget_smp_remove"
+                    onclick="budgetRemove_onclick(this.parentNode, this.previousSibling.previousSibling.previousSibling.textContent, this.previousSibling.textContent, this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.id)"
+                  >
+                    <i class="bi bi-x"></i>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -193,6 +264,604 @@
       <div class="clone container" id="clone"></div>
     </main>
     <footer></footer>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script>
+      // Exchange currency
+      let curr = [{date: "", data:[]}] // contains exchange rate data of dates
+
+      function loadCurr() {
+        let lastCurr = localStorage.getItem("curr");
+        if (!lastCurr) return;
+
+        curr = JSON.parse(lastCurr);
+      }
+
+      function saveCurr() {
+        localStorage.setItem("curr", JSON.stringify(curr));
+      }
+
+      loadCurr(curr)
+
+      var mode = 1; // mode 1: Other currency, mode 2: KRW
+      $(document).ready(function () {
+        $("#btn_mode").click(function (e) {
+          e.preventDefault();
+
+          mode === 1 ? (mode = 2) : (mode = 1);
+
+          let currency1 = "KRW";
+          let currency2 = $("#to_currency").val();
+          let total_cost = deleteComma(document.querySelector("#total_cost").innerText);
+          let budget_cost = deleteComma(document.querySelector("#budget_cost").innerText);
+          let totalSumArray = document.querySelectorAll("#total_sum")
+          let budgetSumArray = document.querySelectorAll("#budget_sum")
+          let eachCostArray = document.querySelectorAll(".eachCost"); //array
+          //let total_sum = deleteComma(document.querySelector("#total_sum").innerText);
+          //let budget_sum = document.querySelector("#budget_sum").value;
+
+          // api
+          var url = `http://data.fixer.io/api/latest?access_key=aacb92a146d90f4e06777887e2303beb`;
+
+          let currency1_rates; // 1 EUR -> currency1 (KRW)
+          let currency2_rates; // 1 EUR -> currency2 (Other currency)
+          let total_exchanged;
+          let budget_exchanged;
+          //let totalSumExchangedArray;
+          //let budgetSumExchangedArray;
+          //let eachCostExchangedArray;
+
+          // invalid value handling
+          if (($("#to_currency").val() === "Select Currency") || (total_cost === 0 && budget_cost === 0)) {
+            document.querySelector("#to_currency").className = "form-select me-auto border-danger is-invalid border-5";
+            return;
+          } else {
+            document.querySelector("#to_currency").className = "form-select me-auto border-primary border-3";
+          }
+
+          // Calling Exchange Rates API if there's no existed data of today's exchange rates in 'curr'
+          if (curr[curr.length-1].date !== new Date().toLocaleDateString()) {
+            $.ajax({
+            method: "GET",
+            url: url,
+            async: false,
+            success: function (data) {
+              currency1_rates = data["rates"][currency1];
+              currency2_rates = data["rates"][currency2];
+              console.log(data);
+
+              var day = {
+              date: new Date().toLocaleDateString(),
+              data: data
+              }
+
+              curr.push(day);
+              saveCurr(curr);
+            },
+
+          });
+          } else {
+            currency1_rates = curr[curr.length-1].data["rates"][currency1];
+            currency2_rates = curr[curr.length-1].data["rates"][currency2];
+          }
+          
+          // calculate exchanged value
+          if (mode === 2) { // from other currency to KRW
+
+            total_exchanged = ((1 / currency2_rates) * currency1_rates * total_cost).toFixed(2)
+            budget_exchanged = ((1 / currency2_rates) * currency1_rates * budget_cost).toFixed(2);
+
+            totalSumArray.forEach((a) => {
+              let total_sum = deleteComma(a.innerText);
+              let totalSum_exchanged = ((1 / currency2_rates) * currency1_rates * total_sum).toFixed(2);
+              
+              a.textContent = addComma(totalSum_exchanged);
+            })
+          
+            budgetSumArray.forEach((a) => {
+              let budget_sum = deleteComma(a.value);
+              let budgetSum_exchanged = ((1 / currency2_rates) * currency1_rates * budget_sum).toFixed(2);
+
+              a.value = budgetSum_exchanged;
+            })
+
+              //document.querySelector("#total_sum").textContent = addComma(totalSum_exchanged);
+              //document.querySelector("#budget_sum").value = budgetSum_exchanged;
+
+            for (let i = 0; i < eachCostArray.length; i++) { // plans in budget list
+
+              if (eachCostArray[i].textContent === "Cost") continue; 
+
+              let eachCost_exchanged = ((1 / currency2_rates) * currency1_rates * deleteComma(eachCostArray[i].textContent)).toFixed(2);
+              let eachCostSymbol = exchangeList.find((o) => o.currency === "KRW").symbol;
+
+              eachCostArray[i].textContent = addComma(eachCost_exchanged);
+              document.querySelectorAll(".eachSymbol")[i].textContent = eachCostSymbol;
+            }
+
+            document.querySelector("#currency").textContent = exchangeList.find((o) => o.currency === "KRW").symbol;
+            document.querySelectorAll("#sumCurrency").forEach((o) => {
+              o.textContent = exchangeList.find((o) => o.currency === "KRW").symbol;
+            }
+          );
+          }
+
+          else { // from KRW to other currency
+            total_exchanged = ((1 / currency1_rates) * currency2_rates * total_cost).toFixed(2);
+            budget_exchanged = ((1 / currency1_rates) * currency2_rates * budget_cost).toFixed(2);
+
+            totalSumArray.forEach((a) => {
+              let total_sum = deleteComma(a.innerText);
+              let totalSum_exchanged = ((1 / currency1_rates) * currency2_rates * total_sum).toFixed(2);
+              
+              a.textContent = addComma(totalSum_exchanged);
+            })
+          
+            budgetSumArray.forEach((a) => {
+              let budget_sum = deleteComma(a.value);
+              let budgetSum_exchanged = ((1 / currency1_rates) * currency2_rates * budget_sum).toFixed(2);
+
+              a.value = budgetSum_exchanged;
+            })
+
+            for (let i = 0; i < eachCostArray.length; i++) {
+
+              if (eachCostArray[i].textContent === "Cost") continue;
+
+              let eachCost_exchanged = ((1 / currency1_rates) * currency2_rates * deleteComma(eachCostArray[i].textContent)).toFixed(2);
+              let eachCostSymbol = exchangeList.find((o) => o.currency === $("#to_currency option:selected").text()).symbol;
+
+              eachCostArray[i].textContent = addComma(eachCost_exchanged);
+              document.querySelectorAll(".eachSymbol")[i].textContent = eachCostSymbol;
+            }
+
+            document.querySelector("#currency").textContent = exchangeList.find((o) => o.currency === $("#to_currency option:selected").text()).symbol;
+            document.querySelectorAll("#sumCurrency").forEach((o) => {
+              o.textContent = exchangeList.find((o) => o.currency === $("#to_currency option:selected").text()).symbol;
+            }
+          );
+          }
+
+          document.querySelector("#total_cost").textContent = addComma(total_exchanged);
+          document.querySelector("#budget_cost").textContent = addComma(budget_exchanged);
+        });
+      });
+    </script>
+
+    <script>
+      // Add plans (yellow box)
+      let tasks = [];
+      let locations = [];
+      let popup;
+
+      function btn_add_onclick(id) {
+        let idx = +id.split("_")[2] - 1; 
+        console.log(idx);
+
+        let plan_input = document.querySelectorAll("#plan_input")[idx];
+        let task = plan_input.value;
+
+        //let task = plan_input.value;
+        console.log("task : " + task);
+
+        if (!task.length) return;
+
+        //popup html
+        /*popup = window.open(
+          "./pop_up.html",
+          "address_input",
+          "width=400, height=100, left=500, top=350"
+        );*/
+
+        tasks.push(task);
+        saveTasks();
+
+        addToList(task, idx);
+
+        plan_input.value = "";
+      }
+
+      function btn_remove_onclick(div, task) {
+        console.log("onclick");
+        div.remove();
+
+        console.log("remove");
+        tasks = tasks.filter((t) => t !== task);
+
+        saveTasks();
+      }
+
+      //Function addToList
+      function addToList(task, idx) {
+        console.log("addToList");
+        let div = document.createElement("div");
+        div.classList.add("task", "d-flex", "align-items-center", "m-1");
+
+        let span = document.createElement("span");
+        span.className = "me-auto";
+        span.textContent = task;
+        div.appendChild(span);
+
+        /*plan list remove button*/
+        let btn_remove = document.createElement("button");
+        btn_remove.className = "btn btn-danger me-1";
+        btn_remove.innerHTML = '<i class="bi bi-x"></i>';
+        btn_remove.setAttribute(
+          "onclick",
+          "btn_remove_onclick(this.parentNode, this.previousSibling.textContent)"
+        );
+        div.appendChild(btn_remove);
+
+        //Remove Event
+        /*btn_ remove.addEventListener("click", () => {
+          div.remove();
+          tasks = tasks.filter((t) => t !== task);
+          saveTasks();
+        });*/
+
+        let btn_gps = document.createElement("button");
+        btn_gps.className = "btn";
+        btn_gps.id = "btn_gps";
+        btn_gps.innerHTML = '<i class="bi bi-geo-alt-fill"></i>';
+        div.appendChild(btn_gps);
+
+        let planList = document.querySelectorAll("#plan_list")[idx];
+        planList.appendChild(div);
+      }
+
+      //Save
+      function saveTasks() {
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+      }
+
+      //Load
+      window.addEventListener("load", () => {
+        loadTasks();
+      });
+
+      function loadTasks() {
+        let lastTasks = localStorage.getItem("tasks");
+        if (!lastTasks) return;
+
+        tasks = JSON.parse(lastTasks);
+        tasks.forEach((t) => {
+          addToList(t);
+        });
+      }
+
+      /*remove sample*/
+      /*let btn_smp_remove = document.querySelector("#btn_smp_remove");
+      btn_smp_remove.addEventListener("click", () => {
+        let div = document.querySelector(".task.sample");
+        div.remove();
+      });*/
+      let btn_smp_gps = document.querySelector("#btn_gps");
+      btn_smp_gps.addEventListener("click", () => {
+        window.open(
+          "./pop_up.html",
+          "address_input",
+          "width=400, height=100, left=500, top=350"
+        );
+      });
+    </script>
+
+    <script>
+      // Add cost plans (blue box)
+      var costTasks = [];
+      var costPlan_input;
+      var cost_input;
+      var costPlan_text;
+      var cost_text;
+      var total_cost;
+      var total_sum;
+      var budget_sum; 
+        
+      function budgetAdd_onclick(id) {
+        let idx = +id.split("_")[2] - 1; 
+        console.log(idx);
+
+        costPlan_input = document.querySelectorAll("#costPlan_input")[idx];
+        cost_input = document.querySelectorAll("#cost_input")[idx];
+        costPlan_text = costPlan_input.value;
+        cost_text = cost_input.value;
+        total_cost = deleteComma(document.querySelector("#total_cost").innerText);
+        total_sum = deleteComma(document.querySelectorAll("#total_sum")[idx].innerText);
+        budget_sum = document.querySelectorAll("#budget_sum")[idx].value;
+
+        // invalid input handling
+        if (!costPlan_text.length || !cost_text.length) return;
+
+        if ($("#to_currency").val() === "Select Currency") {
+          document.querySelector("#to_currency").className = "form-select me-auto border-danger is-invalid border-3";
+          return;
+        } else {
+          document.querySelector("#to_currency").className = "form-select me-auto border-primary border-3";
+        }
+
+        let costTask = {
+          plan: costPlan_text,
+          cost: cost_text,
+          index: idx,
+          mode: mode
+        };
+
+        costTasks.push(costTask);
+        addToCost(costTask, idx);
+
+        costPlan_input.value = "";
+        cost_input.value = "";
+      }
+
+      // Function budgetRemove_onclick
+      function budgetRemove_onclick(div, plan, cost, id) { // 이 부분 수정 필요
+        let idx = +id.split("_")[2] - 1; 
+
+        total_cost = deleteComma(document.querySelector("#total_cost").innerText);
+        total_sum = deleteComma(document.querySelectorAll("#total_sum")[idx].innerText);
+
+        document.querySelector("#total_cost").textContent = addComma(total_cost - deleteComma(div.childNodes[2].textContent));
+        document.querySelectorAll("#total_sum")[idx].textContent = addComma(total_sum - deleteComma(div.childNodes[2].textContent));
+          
+        div.remove();
+        costTasks = costTasks.filter((t) => t.plan !== plan && t.index !== idx);
+        saveTasks();
+      }
+
+      //Function addToCost
+      function addToCost(costTask, idx) {
+        console.log("addToCost");
+        let div = document.createElement("div");
+        div.className = "cost d-flex align-items-center m-1";
+
+        let span1 = document.createElement("span");
+        let span2 = document.createElement("span");
+        let span3 = document.createElement("span");
+        let symbol = document.querySelector("#currency").textContent;
+        span1.className = "me-auto"
+        span2.className = "eachSymbol me-1"
+        span3.className = "eachCost me-3"
+        span1.textContent = costTask.plan;
+        span2.textContent = symbol
+        span3.textContent = addComma(costTask.cost);
+        div.appendChild(span1);
+        div.appendChild(span2);
+        div.appendChild(span3);
+        
+        document.querySelectorAll("#total_sum")[idx].innerText = addComma(total_sum + parseInt(costTask.cost));
+        document.querySelector("#total_cost").innerText = addComma(total_cost + parseInt(costTask.cost));
+
+        // Remove button for cost plan
+        let budgetRemove = document.createElement("button");
+        budgetRemove.className = "btn btn-danger me-1";
+        budgetRemove.innerHTML = '<i class="bi bi-x"></i>';
+        budgetRemove.setAttribute(
+          "onclick",
+          "budgetRemove_onclick(this.parentNode, this.previousSibling.previousSibling.previousSibling.textContent, this.previousSibling.textContent, this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.id)"
+        );
+        div.appendChild(budgetRemove);
+
+        document.querySelectorAll("#cost_list")[idx].appendChild(div);
+      }
+  
+      // Function budgetChange
+      function budgetChange() {
+        let budgets = document.querySelectorAll("#budget_sum");
+        var finalBudget = 0;
+
+        for (let i = 0; i < budgets.length; i++) {
+          if (!budgets[i].value) continue;
+          finalBudget += parseInt(budgets[i].value);
+        }
+
+        document.querySelector("#budget_cost").innerText = addComma(finalBudget);
+
+        if (document.querySelector("#budget_cost").innerText === "") {
+          document.querySelector("#budget_cost").innerText = "0"
+        }
+      }
+
+      // Function addComma
+      function addComma(num) {
+        var pattern = /\B(?=(\d{3})+(?!\d))/g;
+        return num.toString().replace(pattern, ',');
+      }
+
+      // Function deleteComma
+      function deleteComma(num){
+    return parseInt(num.replace(/,/g , ''));
+}
+      /* Currency Data */
+      let exchangeList = [
+        { currency: "AED", symbol: "د.إ" },
+        { currency: "AFN", symbol: "Af" },
+        { currency: "ALL", symbol: "L" },
+        { currency: "AMD", symbol: "Դ" },
+        { currency: "ANG", symbol: "ƒ" },
+        { currency: "AOA", symbol: "Kz" },
+        { currency: "ARS", symbol: "$" },
+        { currency: "AUD", symbol: "$" },
+        { currency: "AWG", symbol: "ƒ" },
+        { currency: "AZN", symbol: "ман" },
+        { currency: "BAM", symbol: "КМ" },
+        { currency: "BBD", symbol: "$" },
+        { currency: "BDT", symbol: "৳" },
+        { currency: "BGN", symbol: "лв" },
+        { currency: "BHD", symbol: "ب.د" },
+        { currency: "BIF", symbol: "₣" },
+        { currency: "BMD", symbol: "$" },
+        { currency: "BND", symbol: "$" },
+        { currency: "BOB", symbol: "Bs." },
+        { currency: "BRL", symbol: "R$" },
+        { currency: "BSD", symbol: "$" },
+        { currency: "BTN", symbol: "Nu." },
+        { currency: "BWP", symbol: "P" },
+        { currency: "BYN", symbol: "Br" },
+        { currency: "BZD", symbol: "$" },
+        { currency: "CAD", symbol: "$" },
+        { currency: "CDF", symbol: "₣" },
+        { currency: "CHF", symbol: "₣" },
+        { currency: "CLF", symbol: "UF" },
+        { currency: "CLP", symbol: "$" },
+        { currency: "CNY", symbol: "¥" },
+        { currency: "COP", symbol: "$" },
+        { currency: "CRC", symbol: "₡" },
+        { currency: "CUC", symbol: "$" },
+        { currency: "CUP", symbol: "$" },
+        { currency: "CVE", symbol: "$" },
+        { currency: "CZK", symbol: "Kč" },
+        { currency: "DJF", symbol: "₣" },
+        { currency: "DKK", symbol: "kr" },
+        { currency: "DOP", symbol: "$" },
+        { currency: "DZD", symbol: "د.ج" },
+        { currency: "EGP", symbol: "£" },
+        { currency: "ERN", symbol: "Nfk" },
+        { currency: "ETB", symbol: "Br" },
+        { currency: "EUR", symbol: "€" },
+        { currency: "FJD", symbol: "$" },
+        { currency: "FKP", symbol: "£" },
+        { currency: "GBP", symbol: "£" },
+        { currency: "GEL", symbol: "ლ" },
+        { currency: "GGP", symbol: "£" },
+        { currency: "GHS", symbol: "₵" },
+        { currency: "GIP", symbol: "£" },
+        { currency: "GMD", symbol: "D" },
+        { currency: "GNF", symbol: "₣" },
+        { currency: "GTQ", symbol: "Q" },
+        { currency: "GYD", symbol: "$" },
+        { currency: "HKD", symbol: "$" },
+        { currency: "HNL", symbol: "L" },
+        { currency: "HRK", symbol: "Kn" },
+        { currency: "HTG", symbol: "G" },
+        { currency: "HUF", symbol: "Ft" },
+        { currency: "IDR", symbol: "Rp" },
+        { currency: "ILS", symbol: "₪" },
+        { currency: "IMP", symbol: "£" },
+        { currency: "INR", symbol: "₹" },
+        { currency: "IQD", symbol: "ع.د" },
+        { currency: "IRR", symbol: "﷼" },
+        { currency: "ISK", symbol: "Kr" },
+        { currency: "JEP", symbol: "$" },
+        { currency: "JMD", symbol: "$" },
+        { currency: "JOD", symbol: "د.ا" },
+        { currency: "JPY", symbol: "¥" },
+        { currency: "KES", symbol: "Sh" },
+        { currency: "KHR", symbol: "៛" },
+        { currency: "KMF", symbol: "£" },
+        { currency: "KPW", symbol: "₩" },
+        { currency: "KRW", symbol: "₩" },
+        { currency: "KWD", symbol: "د.ك" },
+        { currency: "KYD", symbol: "$" },
+        { currency: "KZT", symbol: "〒" },
+        { currency: "LBP", symbol: "ل.ل" },
+        { currency: "LKR", symbol: "Rs" },
+        { currency: "LRD", symbol: "$" },
+        { currency: "LSL", symbol: "L" },
+        { currency: "LYD", symbol: "ل.د" },
+        { currency: "MAD", symbol: "د.م." },
+        { currency: "MDL", symbol: "L" },
+        { currency: "MGA", symbol: "Ar" },
+        { currency: "MKD", symbol: "ден" },
+        { currency: "MMK", symbol: "K" },
+        { currency: "MNT", symbol: "₮" },
+        { currency: "MOP", symbol: "P" },
+        { currency: "MRO", symbol: "UM" },
+        { currency: "MUR", symbol: "₨" },
+        { currency: "MVR", symbol: "ރ." },
+        { currency: "MWK", symbol: "ރ." },
+        { currency: "MXN", symbol: "$" },
+        { currency: "MYR", symbol: "RM" },
+        { currency: "MZN", symbol: "MTn" },
+        { currency: "NAD", symbol: "$" },
+        { currency: "NGN", symbol: "₦" },
+        { currency: "NOK", symbol: "kr" },
+        { currency: "NPR", symbol: "₨" },
+        { currency: "NZD", symbol: "$" },
+        { currency: "OMR", symbol: "ر.ع." },
+        { currency: "PAB", symbol: "B/." },
+        { currency: "PEN", symbol: "S/." },
+        { currency: "PGK", symbol: "K" },
+        { currency: "PHP", symbol: "₱" },
+        { currency: "PKR", symbol: "₨" },
+        { currency: "PLN", symbol: "zł" },
+        { currency: "PYG", symbol: "₲" },
+        { currency: "QAR", symbol: "ر.ق" },
+        { currency: "RON", symbol: "L" },
+        { currency: "RSD", symbol: "din" },
+        { currency: "RUB", symbol: "р." },
+        { currency: "RWF", symbol: "₣" },
+        { currency: "SAR", symbol: "ر.س" },
+        { currency: "SBD", symbol: "$" },
+        { currency: "SCR", symbol: "₨" },
+        { currency: "SDG", symbol: "£" },
+        { currency: "SEK", symbol: "£" },
+        { currency: "SGD", symbol: "$" },
+        { currency: "SHP", symbol: "£" },
+        { currency: "SLL", symbol: "Le" },
+        { currency: "SOS", symbol: "Sh" },
+        { currency: "SRD", symbol: "$" },
+        { currency: "SYP", symbol: "ر.س" },
+        { currency: "SZL", symbol: "L" },
+        { currency: "THB", symbol: "฿" },
+        { currency: "TJS", symbol: "ЅМ" },
+        { currency: "TMT", symbol: "m" },
+        { currency: "TND", symbol: "د.ت" },
+        { currency: "TOP", symbol: "T$" },
+        { currency: "TRY", symbol: "₤" },
+        { currency: "TTD", symbol: "$" },
+        { currency: "TWD", symbol: "$" },
+        { currency: "TZS", symbol: "Sh" },
+        { currency: "UAH", symbol: "₴" },
+        { currency: "UGX", symbol: "Sh" },
+        { currency: "USD", symbol: "$" },
+        { currency: "UYU", symbol: "$" },
+        { currency: "UZS", symbol: "so'm" },
+        { currency: "VEF", symbol: "Bs F" },
+        { currency: "VND", symbol: "₫" },
+        { currency: "VUV", symbol: "Vt" },
+        { currency: "WST", symbol: "T" },
+        { currency: "XAF", symbol: "₣" },
+        { currency: "XCD", symbol: "$" },
+        { currency: "XOF", symbol: "Fr" },
+        { currency: "XPF", symbol: "₣" },
+        { currency: "YER", symbol: "﷼" },
+        { currency: "ZAR", symbol: "R" },
+        { currency: "ZMK", symbol: "ZK" },
+        { currency: "ZMW", symbol: "$" },
+        { currency: "ZWL", symbol: "$" },
+      ];
+
+      // Create select drop box
+      $(document).ready(function () {
+        for (var i = 1; i < exchangeList.length; i++) {
+          $("#to_currency").append(
+            '<option value ="' +
+              exchangeList[i].currency +
+              '">' +
+              exchangeList[i].currency +
+              "</option>"
+          );
+        }
+      });
+      
+      // Display currency symbol
+      $(document).ready(function () {
+        $("#to_currency").on("change", function () {
+          let sumCurrency = document.querySelectorAll("#sumCurrency");
+          let showSymbol = exchangeList.find((o) => o.currency === this.value);
+
+          if (this.value === "Select Currency") {
+            document.querySelector("#currency").textContent = "";
+            return
+          }
+
+          document.querySelector("#currency").textContent = showSymbol.symbol;
+          sumCurrency.forEach((c) => {
+            c.textContent = showSymbol.symbol
+          });
+        });
+      });
+    </script>
 
     <!--DO NOT TOUCH-->
     <script
@@ -216,6 +885,7 @@
     />
 
     <script type="text/javascript">
+      /* Calendar & Dates */
       let st, ed;
       let st_date, ed_date;
       let day_range = [],
@@ -326,6 +996,7 @@
           console.log("day_range: ", day_range);
           console.log("mon_range: ", mon_range);
 
+          // Clone pages
           if (day_range.length - 1) {
             for (let i = 0; i < day_range.length - 1; i++) {
               $("#plan_container_1")
