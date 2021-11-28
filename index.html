@@ -70,7 +70,7 @@
       <div class="container" id="title_container">
         <div class="item" id="title_input">
           <input
-            class="title input form-control form-control-lg"
+            class="title input form-control form-control-lg fw-bold"
             type="text"
             placeholder="Enter trip title"
             aria-label=".form-control-lg example"
@@ -1022,11 +1022,12 @@
 
       //Load
       window.addEventListener("load", () => {
+        loadDay();
+        loadContainer();
         loadTasks();
         loadTexts();
 
-        loadDay();
-        loadContainer();
+        
       });
 
       function loadTasks() {
