@@ -266,8 +266,8 @@
             class="controls"
             type="text"
             placeholder="Search Box"
-          />
-          <div id="map"></div>
+            />
+            <div id="map"></div>
           </div>
         </div>
       </div>
@@ -900,6 +900,18 @@
                 .appendTo(".clone")
                 .prop("id", "plan_container_" + (i + 2));
             }
+          }
+
+          let src = document.querySelector("#map");
+          let cloned = document.querySelectorAll("#map");
+          let dst = document.querySelectorAll("#map_area");
+          console.log("cloned.length : ", cloned.length);
+          
+          for(let i = 1; i < cloned.length; i++){
+            let copy = src.cloneNode(true);
+
+            dst[i].removeChild(cloned[i]);
+            dst[i].appendChild(copy);
           }
 
           console.log(mon_range);
