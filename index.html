@@ -44,7 +44,7 @@
 
   <body>
     <header>
-      <nav class="navbar navbar-light bg-light">
+      <nav class="navbar navbar-light bg-light justify-content-between">
         <div class="container-fluid">
           <a class="navbar-brand fw-bold" href="#">
             <img
@@ -56,13 +56,17 @@
             />
             Travel Helper
           </a>
+          <div>
+            <button class="btn btn-warning" onclick="reset()">RESET</button>
+          </div>
+          <div class="me-5">OSS_FINAL_PROJECT_22조</div>
         </div>
       </nav>
       <!--Title Area-->
       <div class="container" id="title_container">
         <div class="item" id="title_input">
           <input
-            class="form-control form-control-lg"
+            class="title input form-control form-control-lg"
             type="text"
             placeholder="Enter trip title"
             aria-label=".form-control-lg example"
@@ -70,26 +74,26 @@
           </div>
   
           <div class="item" id="date_input">
-            <input
-              class="form-control form-control-sm"
-              type="text"
-              id="demo"
-              name="demo"
-              value=""
-              aria-label=".form-control-sm example"
-            />
-          </div>
-  
-          <div class="item" id="cpn_input">
-            <input
-              class="form-control form-control-sm"
-              type="text"
-              placeholder="김XX, 이XX, 박XX"
-              aria-label=".form-control-sm example"
-            />
-          </div>
+          <input
+            class="form-control form-control-sm"
+            type="text"
+            id="demo"
+            name="demo"
+            value=""
+            aria-label=".form-control-sm example"
+          />
         </div>
-      </header>
+
+        <div class="item" id="cpn_input">
+          <input
+            class="cpn_input form-control form-control-sm"
+            type="text"
+            placeholder="김XX, 이XX, 박XX"
+            aria-label=".form-control-sm example"
+          />
+        </div>
+      </div>
+    </header>
     <main>
       <!--Showing total Budget-->
       <div
@@ -143,7 +147,7 @@
       >
         <div class="d-flex align-items-baseline ms-1" id="plan_date_area">
           <p class="fw-bold fs-3">|</p>
-          <p class="fs-4 date text" id="day_date_text">10.XX</p>
+          <p class="fs-4 date text" id="day_date_text">MM.DD</p>
           <input
             class="bg-light fw-bold fs-5"
             id="day_title_input"
@@ -260,7 +264,7 @@
       <div class="clone container" id="clone"></div>
     </main>
     <footer></footer>
-
+    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <script>
@@ -883,6 +887,9 @@
     <script type="text/javascript">
       /* Calendar & Dates */
       let st, ed;
+      let st_date, ed_date;
+      let day_range = [],
+        mon_range = [];
 
       $("#demo").daterangepicker(
         {
@@ -916,16 +923,21 @@
           drops: "down",
         },
         function (start, end, label) {
-          let dateText = document.querySelector(".date.text");
-          if (dateText !== "10.XX") {
-            $("#clone").empty();
-          }
-
           st = start.format("YYYY-MM-DD");
           ed = end.format("YYYY-MM-DD");
           console.log(st + " to " + ed);
 
-          let st_date, ed_date;
+          let dateText = document.querySelector(".date.text").textContent;
+          let stDateText = st.split("-")[1] + "." + st.split("-")[2];
+          console.log("dateText: " + dateText);
+          console.log("stDateText: " + stDateText);
+          if (dateText !== "MM.DD" || dateText !== stDateText) {
+            $("#clone").empty();
+          }
+
+          localStorage.setItem("st", st);
+          localStorage.setItem("ed", ed);
+
           st_date = st.split("-");
           ed_date = ed.split("-");
 
@@ -933,9 +945,7 @@
             st_mon = +st_date[1],
             st_day = +st_date[2],
             ed_mon = +ed_date[1],
-            ed_day = +ed_date[2],
-            day_range = [],
-            mon_range = [];
+            ed_day = +ed_date[2];
 
           //case of changed month
           if (st_mon !== ed_mon) {
@@ -996,18 +1006,209 @@
             }
           }
 
+          console.log(mon_range);
           i = 0;
           document.querySelectorAll(".date.text").forEach((date) => {
-            if (st_mon !== ed_mon) {
-            }
             date.textContent = mon_range[i] + "." + day_range[i];
             i++;
           });
 
-          day_range = [];
+          localStorage.setItem("mon_range", JSON.stringify(mon_range));
+          localStorage.setItem("day_range", JSON.stringify(day_range));
+
           mon_range = [];
+          day_range = [];
         }
       );
+
+      let tasks = [];
+      let locations = [];
+      let popup;
+
+      let title_input = document.querySelector(".title.input");
+      title_input.addEventListener("input", () => {
+        let title = title_input.value;
+        localStorage.setItem("title", title);
+      });
+
+      let companies_input = document.querySelector(".cpn_input");
+      companies_input.addEventListener("input", () => {
+        let companies = companies_input.value;
+        console.log(companies);
+        localStorage.setItem("companies", companies);
+      });
+
+      function reset() {
+        localStorage.clear();
+        //localStorage.removeItem("");
+
+        localStorage.setItem("st", "2021-11-28");
+        localStorage.setItem("ed", "2021-11-28");
+        $("#demo").data("daterangepicker").setStartDate("2021-11-28");
+        $("#demo").data("daterangepicker").setEndDate("2021-11-28");
+      }
+
+      function btn_add_onclick(id) {
+        let idx = +id.split("_")[2] - 1; //0부터 시작
+        console.log(idx);
+
+        let plan_input = document.querySelectorAll("#plan_input")[idx];
+        let task = plan_input.value;
+
+        //let task = plan_input.value;
+        console.log("task : " + task);
+
+        if (!task.length) return;
+
+        //popup html
+        /*popup = window.open(
+          "./pop_up.html",
+          "address_input",
+          "width=400, height=100, left=500, top=350"
+        );*/
+
+        tasks.push(task);
+        saveTasks();
+
+        addToList(task);
+
+        plan_input.value = "";
+      }
+
+      function btn_remove_onclick(div, task) {
+        console.log("onclick");
+        div.remove();
+
+        console.log("remove");
+        tasks = tasks.filter((t) => t !== task);
+
+        saveTasks();
+      }
+
+      //Function addToList
+      function addToList(task) {
+        console.log("addToList");
+        let div = document.createElement("div");
+        div.classList.add("task", "d-flex", "align-items-center", "m-1");
+
+        let span = document.createElement("span");
+        span.className = "me-auto";
+        span.textContent = task;
+        div.appendChild(span);
+
+        /*plan list remove button*/
+        let btn_remove = document.createElement("button");
+        btn_remove.className = "btn btn-danger me-1";
+        btn_remove.innerHTML = '<i class="bi bi-x"></i>';
+        btn_remove.setAttribute(
+          "onclick",
+          "btn_remove_onclick(this.parentNode, this.previousSibling.textContent)"
+        );
+        div.appendChild(btn_remove);
+
+        //Remove Event
+        /*btn_remove.addEventListener("click", () => {
+          div.remove();
+          tasks = tasks.filter((t) => t !== task);
+          saveTasks();
+        });*/
+
+        let btn_gps = document.createElement("button");
+        btn_gps.className = "btn";
+        btn_gps.id = "btn_gps";
+        btn_gps.innerHTML = '<i class="bi bi-geo-alt-fill"></i>';
+        div.appendChild(btn_gps);
+
+        let planList = document.querySelector("#plan_list");
+        planList.appendChild(div);
+      }
+
+      //Save
+      function saveTasks() {
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+      }
+
+      //Load
+      window.addEventListener("load", () => {
+        loadTasks();
+        loadTexts();
+
+        loadDay();
+        loadContainer();
+      });
+
+      function loadTasks() {
+        let lastTasks = localStorage.getItem("tasks");
+        if (!lastTasks) return;
+
+        tasks = JSON.parse(lastTasks);
+        tasks.forEach((t) => {
+          addToList(t);
+        });
+      }
+
+      function loadTexts() {
+        let lastTitle = localStorage.getItem("title");
+        title_input.value = lastTitle;
+
+        let lastcompanies = localStorage.getItem("companies");
+        companies_input.value = lastcompanies;
+      }
+
+      function loadDay() {
+        st = localStorage.getItem("st");
+        ed = localStorage.getItem("ed");
+        if (st === "Invalid date" || ed === "Invalid date") return;
+        console.log(typeof st);
+
+        $("#demo").data("daterangepicker").setStartDate(st);
+        $("#demo").data("daterangepicker").setEndDate(ed);
+      }
+
+      function loadContainer() {
+        let lastMonRange = localStorage.getItem("mon_range");
+        let lastDayRange = localStorage.getItem("day_range");
+        if (!lastMonRange || !lastDayRange) return;
+
+        mon_range = JSON.parse(lastMonRange);
+        day_range = JSON.parse(lastDayRange);
+
+        let dateText = document.querySelector(".date.text").textContent;
+        let stDateText = "" + mon_range[0] + "." + day_range[0];
+        console.log("stDateText: " + stDateText);
+
+        if (dateText !== "MM.DD" || dateText !== stDateText) {
+          $("#clone").empty();
+        }
+
+        if (day_range.length - 1) {
+          for (let i = 0; i < day_range.length - 1; i++) {
+            $("#plan_container_1")
+              .clone(true, true)
+              .appendTo(".clone")
+              .prop("id", "plan_container_" + (i + 2));
+          }
+        }
+
+        console.log(mon_range);
+        i = 0;
+        document.querySelectorAll(".date.text").forEach((date) => {
+          date.textContent = mon_range[i] + "." + day_range[i];
+          i++;
+        });
+
+        mon_range = [];
+        day_range = [];
+      }
+
+      let btn_smp_gps = document.querySelector("#btn_gps");
+      btn_smp_gps.addEventListener("click", () => {
+        window.open(
+          "./pop_up.html",
+          "address_input",
+          "width=400, height=100, left=500, top=350"
+        );
+      });
     </script>
   </body>
 </html>
