@@ -26,6 +26,10 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.1/font/bootstrap-icons.css"
     />
+    
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <link rel="stylesheet" type="text/css" href="./style.css" />
+    <script src="./index.js"></script>
 
     <link
       rel="stylesheet"
@@ -257,7 +261,13 @@
 
           <div class="bg-secondary rounded-2 flex-grow-1 w-50" id="map_area">
             <!--Fill map here-->
-            map
+            <input
+            id="pac-input"
+            class="controls"
+            type="text"
+            placeholder="Search Box"
+          />
+          <div id="map"></div>
           </div>
         </div>
       </div>
@@ -286,7 +296,7 @@
       type="text/css"
       href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"
     />
-
+    
     <script>
       // Exchange currency
       let curr = [{date: "", data:[]}] // contains exchange rate data of dates
@@ -752,7 +762,7 @@
         $("#to_currency").on("change", function () {
           let sumCurrency = document.querySelectorAll("#sumCurrency");
           let showSymbol = exchangeList.find((o) => o.currency === this.value);
-
+    
           if (this.value === "Select Currency") {
             document.querySelector("#currency").textContent = "";
             return
