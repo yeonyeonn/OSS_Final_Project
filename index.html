@@ -205,7 +205,7 @@
                     class="bg-light"
                     id="budget_sum"
                     placeholder="0"
-                    onchange="budgetChange(this.value)"
+                    onchange="budgetChange()"
                   />
                 <h6 class="fw-bold right-box ms-1 me-2" id="sumCurrency"></h6>
               </div>
@@ -242,7 +242,7 @@
                   <button
                     class="btn btn-danger me-1"
                     id="budget_smp_remove"
-                    onclick="budgetRemove_onclick(this.parentNode, this.previousSibling.previousSibling.previousSibling.textContent, this.previousSibling.textContent)"
+                    onclick="budgetRemove_onclick(this.parentNode, this.previousSibling.previousSibling.previousSibling.textContent, this.previousSibling.textContent, this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.id)"
                   >
                     <i class="bi bi-x"></i>
                   </button>
@@ -444,7 +444,7 @@
         div.appendChild(btn_remove);
 
         //Remove Event
-        /*btn_remove.addEventListener("click", () => {
+        /*btn_ remove.addEventListener("click", () => {
           div.remove();
           tasks = tasks.filter((t) => t !== task);
           saveTasks();
@@ -498,25 +498,26 @@
 
     <script>
       // Add cost plans (blue box)
-      let costTasks = [];
-      
+      var costTasks = [];
+      var costPlan_input;
+      var cost_input;
+      var costPlan_text;
+      var cost_text;
+      var total_cost;
+      var total_sum;
+      var budget_sum; 
+        
       function budgetAdd_onclick(id) {
         let idx = +id.split("_")[2] - 1; 
         console.log(idx);
 
-        let costPlan_input = document.querySelectorAll("#costPlan_input")[idx];
-        let cost_input = document.querySelectorAll("#cost_input")[idx];
-        let costPlan_text = costPlan_input.value;
-        let cost_text = cost_input.value;
-        let total_cost = deleteComma(document.querySelector("#total_cost").innerText);
-        console.log(document.querySelectorAll("#total_sum")[idx])
-        console.log(document.querySelectorAll("#total_sum")[idx].innerText)
-        let total_sum = deleteComma(document.querySelectorAll("#total_sum")[idx].innerText);
-        console.log(total_sum)
-        console.log("d")
-        alert(total_sum)
-        console.log(addComma(total_sum))
-        let budget_sum = document.querySelectorAll("#budget_sum")[idx].value;
+        costPlan_input = document.querySelectorAll("#costPlan_input")[idx];
+        cost_input = document.querySelectorAll("#cost_input")[idx];
+        costPlan_text = costPlan_input.value;
+        cost_text = cost_input.value;
+        total_cost = deleteComma(document.querySelector("#total_cost").innerText);
+        total_sum = deleteComma(document.querySelectorAll("#total_sum")[idx].innerText);
+        budget_sum = document.querySelectorAll("#budget_sum")[idx].value;
 
         // invalid input handling
         if (!costPlan_text.length || !cost_text.length) return;
@@ -540,17 +541,20 @@
 
         costPlan_input.value = "";
         cost_input.value = "";
-
       }
 
-      function budgetRemove_onclick(div, plan, cost, idx) {
-        console.log("onclick");
-        console.log(idx);
+      // Function budgetRemove_onclick
+      function budgetRemove_onclick(div, plan, cost, id) { // 이 부분 수정 필요
+        let idx = +id.split("_")[2] - 1; 
+
+        total_cost = deleteComma(document.querySelector("#total_cost").innerText);
+        total_sum = deleteComma(document.querySelectorAll("#total_sum")[idx].innerText);
+
+        document.querySelector("#total_cost").textContent = addComma(total_cost - deleteComma(div.childNodes[2].textContent));
+        document.querySelectorAll("#total_sum")[idx].textContent = addComma(total_sum - deleteComma(div.childNodes[2].textContent));
+          
         div.remove();
-
-        console.log("remove");
         costTasks = costTasks.filter((t) => t.plan !== plan && t.index !== idx);
-
         saveTasks();
       }
 
@@ -573,8 +577,7 @@
         div.appendChild(span1);
         div.appendChild(span2);
         div.appendChild(span3);
-        alert(total_sum)
-        console.log(total_sum)
+        
         document.querySelectorAll("#total_sum")[idx].innerText = addComma(total_sum + parseInt(costTask.cost));
         document.querySelector("#total_cost").innerText = addComma(total_cost + parseInt(costTask.cost));
 
@@ -584,51 +587,41 @@
         budgetRemove.innerHTML = '<i class="bi bi-x"></i>';
         budgetRemove.setAttribute(
           "onclick",
-          "budgetRemove_onclick(this.parentNode, this.previousSibling.textContent, idx)"
+          "budgetRemove_onclick(this.parentNode, this.previousSibling.previousSibling.previousSibling.textContent, this.previousSibling.textContent, this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.id)"
         );
         div.appendChild(budgetRemove);
 
-        budgetRemove.addEventListener("click", () => {
-          let total_sum = deleteComma(document.querySelector("#total_sum").innerText);
-          let total_cost = deleteComma(document.querySelector("#total_cost").innerText);
-          document.querySelector("#total_sum").textContent = addComma(total_sum - deleteComma(div.childNodes[2].textContent));
-          document.querySelector("#total_cost").textContent = addComma(total_cost - deleteComma(div.childNodes[2].textContent));
-          div.remove();
-          
-          costTasks = costTasks.filter((t) => t !== costTask);
-        });
-
-        document.querySelector("#cost_list").appendChild(div);
+        document.querySelectorAll("#cost_list")[idx].appendChild(div);
       }
   
+      // Function budgetChange
+      function budgetChange() {
+        let budgets = document.querySelectorAll("#budget_sum");
+        var finalBudget = 0;
 
-      let budget_smp_remove = document.querySelector("#budget_smp_remove");
-      budget_smp_remove.addEventListener("click", () => {
-        let div = document.querySelector(".cost.sample");
-        div.remove();
-      });
+        for (let i = 0; i < budgets.length; i++) {
+          if (!budgets[i].value) continue;
+          finalBudget += parseInt(budgets[i].value);
+        }
 
-      function budgetChange(value) {
-        // needs to be added up as the budget for each date is added
-        document.querySelector("#budget_cost").innerText = addComma(value)
+        document.querySelector("#budget_cost").innerText = addComma(finalBudget);
+
         if (document.querySelector("#budget_cost").innerText === "") {
           document.querySelector("#budget_cost").innerText = "0"
         }
       }
 
+      // Function addComma
       function addComma(num) {
         var pattern = /\B(?=(\d{3})+(?!\d))/g;
         return num.toString().replace(pattern, ',');
       }
 
+      // Function deleteComma
       function deleteComma(num){
     return parseInt(num.replace(/,/g , ''));
 }
-
-    </script>
-
-    <script>
-      // creating option value of select form
+      /* Currency Data */
       let exchangeList = [
         { currency: "AED", symbol: "د.إ" },
         { currency: "AFN", symbol: "Af" },
@@ -788,6 +781,7 @@
         { currency: "ZWL", symbol: "$" },
       ];
 
+      // Create select drop box
       $(document).ready(function () {
         for (var i = 1; i < exchangeList.length; i++) {
           $("#to_currency").append(
@@ -800,15 +794,21 @@
         }
       });
       
+      // Display currency symbol
       $(document).ready(function () {
         $("#to_currency").on("change", function () {
+          let sumCurrency = document.querySelectorAll("#sumCurrency");
           let showSymbol = exchangeList.find((o) => o.currency === this.value);
+
           if (this.value === "Select Currency") {
             document.querySelector("#currency").textContent = "";
             return
           }
+
           document.querySelector("#currency").textContent = showSymbol.symbol;
-          document.querySelector("#sumCurrency").textContent = showSymbol.symbol;
+          sumCurrency.forEach((c) => {
+            c.textContent = showSymbol.symbol
+          });
         });
       });
     </script>
@@ -835,6 +835,7 @@
     />
 
     <script type="text/javascript">
+      /* Calendar & Dates */
       let st, ed;
 
       $("#demo").daterangepicker(
@@ -939,6 +940,7 @@
           console.log("day_range: ", day_range);
           console.log("mon_range: ", mon_range);
 
+          // Clone pages
           if (day_range.length - 1) {
             for (let i = 0; i < day_range.length - 1; i++) {
               $("#plan_container_1")
