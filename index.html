@@ -214,6 +214,9 @@
 
     <script type="text/javascript">
       let st, ed;
+      let st_date, ed_date;
+      let day_range = [],
+        mon_range = [];
 
       $("#demo").daterangepicker(
         {
@@ -255,8 +258,9 @@
           st = start.format("YYYY-MM-DD");
           ed = end.format("YYYY-MM-DD");
           console.log(st + " to " + ed);
+          localStorage.setItem("st", st);
+          localStorage.setItem("ed", ed);
 
-          let st_date, ed_date;
           st_date = st.split("-");
           ed_date = ed.split("-");
 
@@ -264,9 +268,7 @@
             st_mon = +st_date[1],
             st_day = +st_date[2],
             ed_mon = +ed_date[1],
-            ed_day = +ed_date[2],
-            day_range = [],
-            mon_range = [];
+            ed_day = +ed_date[2];
 
           //case of changed month
           if (st_mon !== ed_mon) {
@@ -326,21 +328,21 @@
             }
           }
 
+          console.log(mon_range);
           i = 0;
           document.querySelectorAll(".date.text").forEach((date) => {
-            if (st_mon !== ed_mon) {
-            }
             date.textContent = mon_range[i] + "." + day_range[i];
             i++;
           });
 
-          day_range = [];
+          localStorage.setItem("mon_range", JSON.stringify(mon_range));
+          localStorage.setItem("day_range", JSON.stringify(day_range));
+
           mon_range = [];
+          day_range = [];
         }
       );
-    </script>
 
-    <script>
       let tasks = [];
       let locations = [];
       let popup;
@@ -442,6 +444,9 @@
       window.addEventListener("load", () => {
         loadTasks();
         loadTexts();
+
+        loadDay();
+        loadContainer();
       });
 
       function loadTasks() {
@@ -460,6 +465,45 @@
 
         let lastcompanies = localStorage.getItem("companies");
         companies_input.value = lastcompanies;
+      }
+
+      function loadDay() {
+        st = localStorage.getItem("st");
+        ed = localStorage.getItem("ed");
+        console.log(st);
+
+        $("#demo").data("daterangepicker").setStartDate(st);
+        $("#demo").data("daterangepicker").setEndDate(ed);
+      }
+
+      function loadContainer() {
+        let dateText = document.querySelector(".date.text");
+        if (dateText !== "MM.DD") {
+          $("#clone").empty();
+        }
+
+        let lastMonRange = localStorage.getItem("mon_range");
+        let lastDayRange = localStorage.getItem("day_range");
+        if (!lastMonRange || !lastDayRange) return;
+
+        mon_range = JSON.parse(lastMonRange);
+        day_range = JSON.parse(lastDayRange);
+
+        if (day_range.length - 1) {
+          for (let i = 0; i < day_range.length - 1; i++) {
+            $("#plan_container_1")
+              .clone(true, true)
+              .appendTo(".clone")
+              .prop("id", "plan_container_" + (i + 2));
+          }
+        }
+
+        console.log(mon_range);
+        i = 0;
+        document.querySelectorAll(".date.text").forEach((date) => {
+          date.textContent = mon_range[i] + "." + day_range[i];
+          i++;
+        });
       }
 
       let btn_smp_gps = document.querySelector("#btn_gps");
