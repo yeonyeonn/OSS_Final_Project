@@ -294,7 +294,7 @@
     <script
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCyzi6tW30H8GoRITn56zf_xTS_34yTPe8&callback=initAutocomplete&libraries=places&v=weekly"
       async
-    ></script>
+    ></script>``
     <link
       rel="stylesheet"
       type="text/css"
@@ -765,17 +765,21 @@
       $(document).ready(function () {
         $("#to_currency").on("change", function () {
           let sumCurrency = document.querySelectorAll("#sumCurrency");
-          let showSymbol = exchangeList.find((o) => o.currency === this.value);
+          let nowSymbol = exchangeList.find((o) => o.currency === this.value);
+          let nowCurrency = this.value;
     
           if (this.value === "Select Currency") {
             document.querySelector("#currency").textContent = "";
             return
           }
 
-          document.querySelector("#currency").textContent = showSymbol.symbol;
+          document.querySelector("#currency").textContent = nowSymbol.symbol;
           sumCurrency.forEach((c) => {
-            c.textContent = showSymbol.symbol
+            c.textContent = nowSymbol.symbol
           });
+          
+          localStorage.setItem("currency", nowCurrency);
+          localStorage.setItem("symbol", nowSymbol);
         });
       });
     </script>
@@ -901,6 +905,16 @@
                 .prop("id", "plan_container_" + (i + 2));
             }
           }
+
+          /*
+          let items = document.querySelectorAll("#map");
+          const input = document.getElementById("pac-input");
+          const searchBox = new google.maps.places.SearchBox(input);
+          for (let item of items) {
+            item.addEventListener("bounds_changed", () => {
+              searchBox.setBounds(map.getBounds());
+            });
+          } */
 
           console.log(mon_range);
           i = 0;
@@ -1028,7 +1042,6 @@
       window.addEventListener("load", () => {
         loadTasks();
         loadTexts();
-
         loadDay();
         loadContainer();
       });
@@ -1049,6 +1062,13 @@
 
         let lastcompanies = localStorage.getItem("companies");
         companies_input.value = lastcompanies;
+        
+        let nowCurrency = localStorage.getItem("currency"); 
+        if (!nowCurrency) return;
+        document.querySelector("#to_currency").value = nowCurrency;
+
+        let nowSymbol = localStorage.getItem("symbol");
+        document.querySelector("#currency").value = nowSymbol;
       }
 
       function loadDay() {
@@ -1080,11 +1100,13 @@
         if (day_range.length - 1) {
           for (let i = 0; i < day_range.length - 1; i++) {
             $("#plan_container_1")
-              .clone(true, true)
+              .clone(true)
               .appendTo(".clone")
               .prop("id", "plan_container_" + (i + 2));
           }
         }
+
+        
 
         console.log(mon_range);
         i = 0;
