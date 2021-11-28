@@ -44,6 +44,9 @@
             />
             Travel Helper
           </a>
+          <div>
+            <button class="btn btn-warning" onclick="reset()">RESET</button>
+          </div>
           <div class="me-5">OSS_FINAL_PROJECT_22조</div>
         </div>
       </nav>
@@ -250,14 +253,18 @@
           drops: "down",
         },
         function (start, end, label) {
-          let dateText = document.querySelector(".date.text");
-          if (dateText !== "MM.DD") {
-            $("#clone").empty();
-          }
-
           st = start.format("YYYY-MM-DD");
           ed = end.format("YYYY-MM-DD");
           console.log(st + " to " + ed);
+
+          let dateText = document.querySelector(".date.text").textContent;
+          let stDateText = st.split("-")[1] + "." + st.split("-")[2];
+          console.log("dateText: " + dateText);
+          console.log("stDateText: " + stDateText);
+          if (dateText !== "MM.DD" || dateText !== stDateText) {
+            $("#clone").empty();
+          }
+
           localStorage.setItem("st", st);
           localStorage.setItem("ed", ed);
 
@@ -359,6 +366,16 @@
         console.log(companies);
         localStorage.setItem("companies", companies);
       });
+
+      function reset() {
+        localStorage.clear();
+        //localStorage.removeItem("");
+
+        localStorage.setItem("st", "2021-11-28");
+        localStorage.setItem("ed", "2021-11-28");
+        $("#demo").data("daterangepicker").setStartDate("2021-11-28");
+        $("#demo").data("daterangepicker").setEndDate("2021-11-28");
+      }
 
       function btn_add_onclick(id) {
         let idx = +id.split("_")[2] - 1; //0부터 시작
@@ -470,24 +487,28 @@
       function loadDay() {
         st = localStorage.getItem("st");
         ed = localStorage.getItem("ed");
-        console.log(st);
+        if (st === "Invalid date" || ed === "Invalid date") return;
+        console.log(typeof st);
 
         $("#demo").data("daterangepicker").setStartDate(st);
         $("#demo").data("daterangepicker").setEndDate(ed);
       }
 
       function loadContainer() {
-        let dateText = document.querySelector(".date.text");
-        if (dateText !== "MM.DD") {
-          $("#clone").empty();
-        }
-
         let lastMonRange = localStorage.getItem("mon_range");
         let lastDayRange = localStorage.getItem("day_range");
         if (!lastMonRange || !lastDayRange) return;
 
         mon_range = JSON.parse(lastMonRange);
         day_range = JSON.parse(lastDayRange);
+
+        let dateText = document.querySelector(".date.text").textContent;
+        let stDateText = "" + mon_range[0] + "." + day_range[0];
+        console.log("stDateText: " + stDateText);
+
+        if (dateText !== "MM.DD" || dateText !== stDateText) {
+          $("#clone").empty();
+        }
 
         if (day_range.length - 1) {
           for (let i = 0; i < day_range.length - 1; i++) {
@@ -504,6 +525,9 @@
           date.textContent = mon_range[i] + "." + day_range[i];
           i++;
         });
+
+        mon_range = [];
+        day_range = [];
       }
 
       let btn_smp_gps = document.querySelector("#btn_gps");
