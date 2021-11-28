@@ -32,7 +32,7 @@
 
   <body>
     <header>
-      <nav class="navbar navbar-light bg-light">
+      <nav class="navbar navbar-light bg-light justify-content-between">
         <div class="container-fluid">
           <a class="navbar-brand fw-bold" href="#">
             <img
@@ -44,13 +44,14 @@
             />
             Travel Helper
           </a>
+          <div class="me-5">OSS_FINAL_PROJECT_22조</div>
         </div>
       </nav>
       <!--Title Area-->
       <div class="container" id="title_container">
         <div class="item" id="title_input">
           <input
-            class="form-control form-control-lg"
+            class="title input form-control form-control-lg"
             type="text"
             placeholder="Enter trip title"
             aria-label=".form-control-lg example"
@@ -70,7 +71,7 @@
 
         <div class="item" id="cpn_input">
           <input
-            class="form-control form-control-sm"
+            class="cpn_input form-control form-control-sm"
             type="text"
             placeholder="김XX, 이XX, 박XX"
             aria-label=".form-control-sm example"
@@ -124,7 +125,7 @@
       >
         <div class="d-flex align-items-baseline ms-1" id="plan_date_area">
           <p class="fw-bold fs-3">|</p>
-          <p class="fs-4 date text" id="day_date_text">10.XX</p>
+          <p class="fs-4 date text" id="day_date_text">MM.DD</p>
           <input
             class="bg-light fw-bold fs-5"
             id="day_title_input"
@@ -247,7 +248,7 @@
         },
         function (start, end, label) {
           let dateText = document.querySelector(".date.text");
-          if (dateText !== "10.XX") {
+          if (dateText !== "MM.DD") {
             $("#clone").empty();
           }
 
@@ -344,6 +345,19 @@
       let locations = [];
       let popup;
 
+      let title_input = document.querySelector(".title.input");
+      title_input.addEventListener("input", () => {
+        let title = title_input.value;
+        localStorage.setItem("title", title);
+      });
+
+      let companies_input = document.querySelector(".cpn_input");
+      companies_input.addEventListener("input", () => {
+        let companies = companies_input.value;
+        console.log(companies);
+        localStorage.setItem("companies", companies);
+      });
+
       function btn_add_onclick(id) {
         let idx = +id.split("_")[2] - 1; //0부터 시작
         console.log(idx);
@@ -427,6 +441,7 @@
       //Load
       window.addEventListener("load", () => {
         loadTasks();
+        loadTexts();
       });
 
       function loadTasks() {
@@ -439,12 +454,14 @@
         });
       }
 
-      /*remove sample*/
-      /*let btn_smp_remove = document.querySelector("#btn_smp_remove");
-      btn_smp_remove.addEventListener("click", () => {
-        let div = document.querySelector(".task.sample");
-        div.remove();
-      });*/
+      function loadTexts() {
+        let lastTitle = localStorage.getItem("title");
+        title_input.value = lastTitle;
+
+        let lastcompanies = localStorage.getItem("companies");
+        companies_input.value = lastcompanies;
+      }
+
       let btn_smp_gps = document.querySelector("#btn_gps");
       btn_smp_gps.addEventListener("click", () => {
         window.open(
