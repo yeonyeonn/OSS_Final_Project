@@ -2,7 +2,11 @@
   width: 120px;
 }
 
-
+.reset{
+  color: rgb(0, 0, 0);
+  border: solid 2px;
+  border-color: rgb(92, 92, 92);
+}
 
 .navbar {
   padding-left: 50px;

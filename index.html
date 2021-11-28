@@ -60,10 +60,10 @@
             />
             Travel Helper
           </a>
-          <div>
-            <button class="btn btn-warning" onclick="reset()">RESET</button>
+          <div class="d-flex align-items-center">
+            <button class="reset btn bg-light btn-sm me-4" onclick="reset()">RESET</button>
+            <div class="me-5">OSS_FINAL_PROJECT_22조</div>
           </div>
-          <div class="me-5">OSS_FINAL_PROJECT_22조</div>
         </div>
       </nav>
       <!--Title Area-->
@@ -194,9 +194,6 @@
                   >
                     <i class="bi bi-x"></i>
                   </button>
-                  <button class="btn" id="btn_gps">
-                    <i class="bi bi-geo-alt-fill"></i>
-                  </button>
                 </div>
               </div>
             </div>
@@ -291,10 +288,10 @@
       type="text/javascript"
       src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"
     ></script>
-    <script
+    <!--<script
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCyzi6tW30H8GoRITn56zf_xTS_34yTPe8&callback=initAutocomplete&libraries=places&v=weekly"
       async
-    ></script>
+    ></script>-->
     <link
       rel="stylesheet"
       type="text/css"
@@ -1014,19 +1011,6 @@
         );
         div.appendChild(btn_remove);
 
-        //Remove Event
-        /*btn_remove.addEventListener("click", () => {
-          div.remove();
-          tasks = tasks.filter((t) => t !== task);
-          saveTasks();
-        });*/
-
-        let btn_gps = document.createElement("button");
-        btn_gps.className = "btn";
-        btn_gps.id = "btn_gps";
-        btn_gps.innerHTML = '<i class="bi bi-geo-alt-fill"></i>';
-        div.appendChild(btn_gps);
-
         let planList = document.querySelectorAll("#plan_list");
         planList[idx].appendChild(div);
       }
@@ -1098,6 +1082,18 @@
           }
         }
 
+        let src = document.querySelector("#map");
+        let cloned = document.querySelectorAll("#map");
+        let dst = document.querySelectorAll("#map_area");
+        console.log("cloned.length : ", cloned.length);
+        
+        for(let i = 1; i < cloned.length; i++){
+          let copy = src.cloneNode(true);
+
+          dst[i].removeChild(cloned[i]);
+          dst[i].appendChild(copy);
+        }
+
         console.log(mon_range);
         i = 0;
         document.querySelectorAll(".date.text").forEach((date) => {
@@ -1108,15 +1104,10 @@
         mon_range = [];
         day_range = [];
       }
-
-      let btn_smp_gps = document.querySelector("#btn_gps");
-      btn_smp_gps.addEventListener("click", () => {
-        window.open(
-          "./pop_up.html",
-          "address_input",
-          "width=400, height=100, left=500, top=350"
-        );
-      });
     </script>
+    <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCyzi6tW30H8GoRITn56zf_xTS_34yTPe8&callback=initAutocomplete&libraries=places&v=weekly"
+    async
+  ></script>
   </body>
 </html>
