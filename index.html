@@ -43,7 +43,7 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.1/font/bootstrap-icons.css"
     />
 
-    <title>Travel Helper (가제)</title>
+    <title>Travel Helper</title>
   </head>
 
   <body>
@@ -301,14 +301,15 @@
       }
 
       loadCurr(curr)
-
+      
+     
       var mode = 1; // mode 1: Other currency, mode 2: KRW
       $(document).ready(function () {
         $("#btn_mode").click(function (e) {
           e.preventDefault();
 
           mode === 1 ? (mode = 2) : (mode = 1);
-
+          
           let currency1 = "KRW";
           let currency2 = $("#to_currency").val();
           let total_cost = deleteComma(document.querySelector("#total_cost").innerText);
@@ -318,15 +319,12 @@
           let eachCostArray = document.querySelectorAll(".eachCost");
 
           // api
-          var url = `http://data.fixer.io/api/latest?access_key=aacb92a146d90f4e06777887e2303beb`;
+          var url = `http://data.fixer.io/api/latest?access_key=b076e0e8d7ec80bf4058d843895b05f6`;
 
           let currency1_rates; // 1 EUR -> currency1 (KRW)
           let currency2_rates; // 1 EUR -> currency2 (Other currency)
           let total_exchanged;
           let budget_exchanged;
-          //let totalSumExchangedArray;
-          //let budgetSumExchangedArray;
-          //let eachCostExchangedArray;
 
           // invalid value handling
           if (($("#to_currency").val() === "Select Currency") || (total_cost === 0 && budget_cost === 0)) {
@@ -335,7 +333,7 @@
           } else {
             document.querySelector("#to_currency").className = "form-select me-auto border-primary border-3";
           }
-
+          
           // Calling Exchange Rates API if there's no existed data of today's exchange rates in 'curr'
           if (curr[curr.length-1].date !== new Date().toLocaleDateString()) {
             $.ajax({
