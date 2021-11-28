@@ -1,4 +1,4 @@
-# OSS_Final_Project
+# Travel Helper
 ![1](https://user-images.githubusercontent.com/83301981/143764468-9d4fd683-b2dd-4331-b3fc-805649c98a80.PNG)
 
 ## A Brief Overview
@@ -57,6 +57,7 @@ With-Corona 국면에 접어들면서 국내 또는 해외 여행을 계획하�
 
 ## Demo
 - [GitHub Page](https://ez615.github.io/OSS_Final_Project/)
+<iframe width="900" height="506" src="https://www.youtube.com/embed/Udvk4iuH3Oc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ## Used api
 
