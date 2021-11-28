@@ -962,7 +962,7 @@
         tasks.push(task);
         saveTasks();
 
-        addToList(task);
+        addToList(task, idx);
 
         plan_input.value = "";
       }
@@ -978,7 +978,7 @@
       }
 
       //Function addToList
-      function addToList(task) {
+      function addToList(task, idx) {
         console.log("addToList");
         let div = document.createElement("div");
         div.classList.add("task", "d-flex", "align-items-center", "m-1");
@@ -1011,8 +1011,8 @@
         btn_gps.innerHTML = '<i class="bi bi-geo-alt-fill"></i>';
         div.appendChild(btn_gps);
 
-        let planList = document.querySelector("#plan_list");
-        planList.appendChild(div);
+        let planList = document.querySelectorAll("#plan_list");
+        planList[idx].appendChild(div);
       }
 
       //Save
