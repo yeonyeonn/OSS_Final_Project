@@ -56,7 +56,7 @@ With-Corona 국면에 접어들면서 국내 또는 해외 여행을 계획하�
 ![8](https://user-images.githubusercontent.com/83301981/143764508-baacf246-084a-4092-9938-8c86b8a16850.png)
 
 ## Demo
-- [GitHub Page](https://ez615.github.io/OSS_Final_Project/)
+- [GitHub Published Page](https://ez615.github.io/OSS_Final_Project/)
 - [Youtube Demo Video](https://www.youtube.com/embed/Udvk4iuH3Oc)
 
 ## Used api
@@ -82,6 +82,8 @@ With-Corona 국면에 접어들면서 국내 또는 해외 여행을 계획하�
 
 3. 곽상천
 	- google map api 사용
+	- README 작성
+	- 최종 발표
 
 ## Bug Report
 
