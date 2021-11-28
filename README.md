@@ -57,7 +57,7 @@ With-Corona 국면에 접어들면서 국내 또는 해외 여행을 계획하�
 
 ## Demo
 - [GitHub Page](https://ez615.github.io/OSS_Final_Project/)
-<iframe width="900" height="506" src="https://www.youtube.com/embed/Udvk4iuH3Oc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+- [Youtube Demo Video](https://www.youtube.com/embed/Udvk4iuH3Oc)
 
 ## Used api
 
